@@ -1,0 +1,15 @@
+# 服务器端口，不写则是默认8080
+server:
+  port: 18888
+
+# 数据库配置信息
+datasource:
+  driverName: mysql
+#  host: 172.17.0.2
+  host: 107.174.95.28
+  port: 3306
+  database: aikan
+  username: root
+  password: aikan_root_980002_admin
+  charset: utf8
+  loc: Asia/Shanghai
