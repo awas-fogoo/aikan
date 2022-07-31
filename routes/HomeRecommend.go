@@ -1,4 +1,4 @@
-package main
+package routes
 
 import (
 	"awesomeProject0511/controller"
@@ -7,9 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CollectRouter(v1 *gin.RouterGroup) *gin.RouterGroup {
-	// 解决不同源
-	v1.Use(middleware.CORSMiddleware())
+func HomeRecommend(v1 *gin.RouterGroup) {
 
 	// 获取首页推荐图片列表
 	v1.GET("/home", controller.GetHomeList)
@@ -34,5 +32,4 @@ func CollectRouter(v1 *gin.RouterGroup) *gin.RouterGroup {
 
 	// web-interface
 	v1.POST("/x/archive/like", middleware.AuthMiddleware(), web_interface.Like)
-	return v1
 }

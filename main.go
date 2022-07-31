@@ -1,6 +1,7 @@
 package main
 
 import (
+	"awesomeProject0511/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"os"
@@ -10,11 +11,8 @@ func main() {
 	InitConfig()
 	// 创建一个默认的路由引擎
 	r := gin.Default()
-	api := r.Group("api")
-	v1 := api.Group("v1")
-
-	// 封装路由 go run main.go routes.go
-	v1 = CollectRouter(v1)
+	// 封装路由 go run main.go
+	r = routes.CollectRouter(r)
 
 	// 启动HTTP服务,默认在0.0.0.0:8080启动服务
 	port := viper.GetString("server.port")
