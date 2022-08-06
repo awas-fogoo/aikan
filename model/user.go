@@ -12,3 +12,9 @@ type User struct {
 	Password string `gorm:"size:255;not null"`
 	Uid      string `gorm:"varchar(50);not null"`
 }
+type RegUser struct {
+	Name     string
+	Email    string
+	Password string
+	Code     string
+}

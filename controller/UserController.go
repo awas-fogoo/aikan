@@ -18,7 +18,12 @@ import (
 )
 
 func SendCode(c *gin.Context) {
-	email := c.PostForm("email")
+	//email := c.PostForm("email")
+	// ajax获取参数
+	regUser := model.RegUser{}
+	c.Bind(&regUser)
+	email := regUser.Email
+	fmt.Println(email)
 	if !isEmailValid(email) {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "邮件的地址格式错误"})
 		return
@@ -43,7 +48,7 @@ func SendCode(c *gin.Context) {
 		duration, _ := rdb.TTL(ctx, key).Result()
 		if duration >= 240000000000 {
 			c.JSON(301, gin.H{
-				"message": "请务频繁发送",
+				"msg": "请务频繁发送",
 			})
 			return
 		}
@@ -70,34 +75,23 @@ func SendCode(c *gin.Context) {
 
 func Register(c *gin.Context) {
 
-	email := c.PostForm("email")
+	// ajax获取参数
+	regUser := model.RegUser{}
+	c.Bind(&regUser)
+
+	/****** postman 调试参数	******/
+	//email := c.PostForm("email")
+	email := regUser.Email
 	if !isEmailValid(email) {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "邮件的地址格式错误"})
 		return
 	}
-	randomCode := c.PostForm("code")
-	// 校验验证码是否正确
-	if len(randomCode) == 0 {
-		c.JSON(200, gin.H{
-			"message": "验证码请务为空",
-		})
-		return
-	}
-	rdb := common.InitCache()
-	ctx := common.Ctx
 
-	// 创建redis-key
-	regEmail := util.ReEmail(email)
-	rdbCode, _ := rdb.Get(ctx, regEmail).Result()
-	if rdbCode == "" || rdbCode != randomCode {
-		c.JSON(200, gin.H{
-			"message": "校验错误，请重新发送",
-		})
-		return
-	}
-	/*  postman 调试参数	*/
-	name := c.PostForm("name")
-	password := c.PostForm("password")
+	/****** postman 调试参数	******/
+	//name := c.PostForm("name")
+	//password := c.PostForm("password")
+	name := regUser.Name
+	password := regUser.Password
 
 	// 数据验证 如果名称没有传，则自动生成一个10位的字符串
 	if len(name) == 0 {
@@ -109,6 +103,28 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	/****** postman 调试参数	******/
+	//randomCode := c.PostForm("code")
+	randomCode := regUser.Code
+
+	// 校验验证码是否正确
+	if len(randomCode) == 0 {
+		c.JSON(422, gin.H{"code": 422, "msg": "请发送验证码"})
+		return
+	}
+	rdb := common.InitCache()
+	ctx := common.Ctx
+
+	// 创建redis-key
+	regEmail := util.ReEmail(email)
+	rdbCode, _ := rdb.Get(ctx, regEmail).Result()
+	if rdbCode == "" || rdbCode != randomCode {
+		c.JSON(422, gin.H{
+			"msg": "校验错误，请重新发送",
+		})
+		return
+	}
+
 	// 连接数据库
 	db := common.InitDB()
 	defer db.Close()
@@ -116,12 +132,6 @@ func Register(c *gin.Context) {
 	//查询上一个uid是多少进行递增
 	user := model.User{}
 	db.Last(&user)
-
-	// ajax获取参数
-	c.Bind(&user)
-	//name := user.Name
-	//email := user.Email
-	//password := user.Password
 	atoi_uid, _ := strconv.Atoi(user.Uid)
 	atoi_uid += 1
 
@@ -162,21 +172,21 @@ func Login(c *gin.Context) {
 	// ajax获取参数
 	requestUser := model.User{}
 	c.Bind(&requestUser)
-	DB := common.InitDB()
 	email := requestUser.Email
 	password := requestUser.Password
 
 	log.Println(email, password)
 	// 数据验证
-	if len(email) != 11 {
+	if !isEmailValid(email) {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "邮件的地址格式错误"})
 		return
 	}
-	if len(password) < 6 {
+	if len(password) < 6 && len(password) == 0 {
 		c.JSON(422, gin.H{"code": 422, "msg": "密码不能少于6位"})
 		return
 	}
 
+	DB := common.InitDB()
 	// 判断email是否存在
 	var user model.User
 	DB.Where("email = ?", email).First(&user)
