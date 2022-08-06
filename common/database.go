@@ -30,7 +30,11 @@ func InitDB() *gorm.DB {
 	if err != nil {
 		panic("faild to connect database ,err :" + err.Error())
 	}
+
 	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.ContentList{})
+	db.AutoMigrate(&model.SwiperList{})
+
 	return db
 }
 

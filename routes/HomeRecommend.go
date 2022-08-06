@@ -22,7 +22,9 @@ func HomeRecommend(v1 *gin.RouterGroup) {
 		})
 	})
 
-	// 用户页面
+	// 发送验证码
+	v1.POST("/auth/reg/code", controller.SendCode)
+	// 用户注册页面
 	v1.POST("/auth/register", controller.Register)
 	v1.POST("/auth/login", controller.Login)
 	v1.GET("/auth/info", middleware.AuthMiddleware(), controller.Info)

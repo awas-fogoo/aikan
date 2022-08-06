@@ -2,29 +2,22 @@ package controller
 
 import (
 	"awesomeProject0511/common"
+	"awesomeProject0511/model"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-type SwiperList struct {
-	Id        string `gorm:"primary_key" json:"id"`
-	Uid       string `gorm:"int(100);unique;not null" json:"uid"`
-	ImgUrl    string `gorm:"varchar(255);not null" json:"imgUrl"`
-	VideoHref string `gorm:"varchar(255);not null" json:"videoHref"`
-}
-
 type Data struct {
-	SwiperList    []SwiperList `json:"swiperList"`
-	PopRecommend  string       `json:"popRecommend"`
-	ClassicReview string       `json:"classicReview"`
+	SwiperList    []model.SwiperList `json:"swiperList"`
+	PopRecommend  string             `json:"popRecommend"`
+	ClassicReview string             `json:"classicReview"`
 }
 
 func GetHomeList(c *gin.Context) {
 	db := common.InitDB()
 	defer db.Close()
 
-	var data SwiperList
-	db.AutoMigrate(data)
+	var data model.SwiperList
 
 	var users []string
 	res, _ := db.Raw("select id,uid,img_url,video_href from swiper_lists").Rows()
@@ -33,7 +26,7 @@ func GetHomeList(c *gin.Context) {
 		// fmt.Printf("data: %v\n", data)
 		users = append(users, data.Id, data.VideoHref, data.Uid, "channel/"+data.ImgUrl)
 	}
-	y := Data{[]SwiperList{
+	y := Data{[]model.SwiperList{
 		{users[0], users[1], users[2], users[3]},
 		{users[4], users[5], users[6], users[7]},
 		{users[8], users[9], users[10], users[11]},

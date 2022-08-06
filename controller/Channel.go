@@ -21,11 +21,9 @@ func GetTopChannelDetail(c *gin.Context) {
 
 	var videoInfo model.ContentList
 	var recInfo []model.ContentList
-	db.AutoMigrate(&videoInfo)
 	db.First(&videoInfo, "video_url=?", videoUrl)
 	var list []string
 	var listRec []string
-	//var listRec2 []string
 
 	createAtTime := videoInfo.CreatedAt.Format("2006-01-02 15:04:05")
 	list = append(
