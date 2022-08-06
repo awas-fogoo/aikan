@@ -4,6 +4,7 @@ import (
 	"awesomeProject0511/common"
 	"awesomeProject0511/dto"
 	"awesomeProject0511/model"
+	"awesomeProject0511/response"
 	"awesomeProject0511/server"
 	"awesomeProject0511/util"
 	"fmt"
@@ -17,15 +18,15 @@ import (
 	"time"
 )
 
-func SendCode(c *gin.Context) {
+func SendVerificationCode(c *gin.Context) {
 	//email := c.PostForm("email")
-	// ajax获取参数
-	regUser := model.RegUser{}
+	//ajax获取参数
+	regUser := dto.RegUser{}
 	c.Bind(&regUser)
 	email := regUser.Email
 	fmt.Println(email)
 	if !isEmailValid(email) {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "邮件的地址格式错误"})
+		response.BadRequest(c, nil, "邮件的地址格式错误")
 		return
 	}
 
@@ -35,7 +36,7 @@ func SendCode(c *gin.Context) {
 
 	//判断邮箱是否存在
 	if isEmailExist(db, email) {
-		c.JSON(422, gin.H{"code": 422, "msg": "邮箱已经存在"})
+		response.BadRequest(c, nil, "邮箱已经存在")
 		return
 	}
 	rdb := common.InitCache()
@@ -47,43 +48,36 @@ func SendCode(c *gin.Context) {
 	if res != "" {
 		duration, _ := rdb.TTL(ctx, key).Result()
 		if duration >= 240000000000 {
-			c.JSON(301, gin.H{
-				"msg": "请务频繁发送",
-			})
+			response.BadRequest(c, nil, "请务频繁发送")
 			return
 		}
-		c.JSON(301, gin.H{
-			"msg": "邮件错误",
-		})
 		return
 	}
 
 	// 创建redis三分钟验证码有效期
 	err := rdb.Set(ctx, key, randomCode, time.Second*300).Err()
 	if err != nil {
-		fmt.Println("err")
+		response.BadRequest(c, nil, "验证码有效期错误")
 		return
 	}
 
 	// 发送验证码到这个邮箱
 	server.SendVerificationCode(email, randomCode)
-	c.JSON(200, gin.H{
-		"msg": "验证码发送成功",
-	})
+	response.Success(c, nil, "验证码发送成功")
 
 }
 
 func Register(c *gin.Context) {
 
 	// ajax获取参数
-	regUser := model.RegUser{}
+	regUser := dto.RegUser{}
 	c.Bind(&regUser)
 
 	/****** postman 调试参数	******/
 	//email := c.PostForm("email")
 	email := regUser.Email
 	if !isEmailValid(email) {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "邮件的地址格式错误"})
+		response.BadRequest(c, nil, "邮件的地址格式错误")
 		return
 	}
 
@@ -99,7 +93,7 @@ func Register(c *gin.Context) {
 	}
 
 	if len(password) < 6 && len(password) == 0 {
-		c.JSON(422, gin.H{"code": 422, "msg": "密码不能少于6位"})
+		response.BadRequest(c, nil, "密码不能少于6位")
 		return
 	}
 
@@ -109,7 +103,7 @@ func Register(c *gin.Context) {
 
 	// 校验验证码是否正确
 	if len(randomCode) == 0 {
-		c.JSON(422, gin.H{"code": 422, "msg": "请发送验证码"})
+		response.BadRequest(c, nil, "请发送验证码")
 		return
 	}
 	rdb := common.InitCache()
@@ -119,11 +113,10 @@ func Register(c *gin.Context) {
 	regEmail := util.ReEmail(email)
 	rdbCode, _ := rdb.Get(ctx, regEmail).Result()
 	if rdbCode == "" || rdbCode != randomCode {
-		c.JSON(422, gin.H{
-			"msg": "校验错误，请重新发送",
-		})
+		response.BadRequest(c, nil, "校验错误，请重新发送")
 		return
 	}
+	server.VerificationCode(email, randomCode)
 
 	// 连接数据库
 	db := common.InitDB()
@@ -156,16 +149,12 @@ func Register(c *gin.Context) {
 	// 发送token
 	token, err := common.ReleaseToken(newUser)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "系统异常"})
+		response.InternalServerError(c, nil, "系统异常")
 		log.Printf("token generate error : %v", err)
 	}
 	rdb.Del(ctx, regEmail) // 删除key
 	//返回结果
-	c.JSON(200, gin.H{
-		"code": 200,
-		"data": gin.H{"token": token},
-		"ok":   "创建成功",
-	})
+	response.Success(c, gin.H{"token": token}, "用户创建成功")
 }
 
 func Login(c *gin.Context) {
@@ -178,11 +167,11 @@ func Login(c *gin.Context) {
 	log.Println(email, password)
 	// 数据验证
 	if !isEmailValid(email) {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "邮件的地址格式错误"})
+		response.BadRequest(c, nil, "邮件的地址格式错误")
 		return
 	}
 	if len(password) < 6 && len(password) == 0 {
-		c.JSON(422, gin.H{"code": 422, "msg": "密码不能少于6位"})
+		response.BadRequest(c, nil, "密码不能少于6位")
 		return
 	}
 
@@ -191,32 +180,29 @@ func Login(c *gin.Context) {
 	var user model.User
 	DB.Where("email = ?", email).First(&user)
 	if user.ID == 0 {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "用户不存在"})
+		response.BadRequest(c, nil, "用户不存在")
+
 		return
 	}
 
 	// 判断密码是否正确
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "密码错误"})
+		response.BadRequest(c, nil, "密码错误")
 		return
 	}
 
 	// 发送token
 	token, err := common.ReleaseToken(user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "系统异常"})
+		response.InternalServerError(c, nil, "系统异常")
 		log.Printf("token generate error : %v", err)
 	}
 
 	//返回结果
-	c.JSON(200, gin.H{
-		"code": 200,
-		"data": gin.H{"token": token},
-		"ok":   "登入成功",
-	})
+	response.Success(c, gin.H{"token": token}, "登入成功")
 }
 
-// user.(model.User) 类型断言 可以说成是类型强制转换
+// Info user.(model.User) 类型断言 可以说成是类型强制转换
 func Info(c *gin.Context) {
 	user, _ := c.Get("user")
 	c.JSON(http.StatusOK, gin.H{"code": 200, "data": dto.ToUserDto(user.(model.User))})

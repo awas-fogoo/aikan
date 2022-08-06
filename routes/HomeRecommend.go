@@ -2,7 +2,6 @@ package routes
 
 import (
 	"awesomeProject0511/controller"
-	web_interface "awesomeProject0511/controller/web-interface"
 	"awesomeProject0511/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +22,7 @@ func HomeRecommend(v1 *gin.RouterGroup) {
 	})
 
 	// 发送验证码
-	v1.POST("/auth/reg/code", controller.SendCode)
+	v1.POST("/auth/reg/code", controller.SendVerificationCode)
 	// 用户注册页面
 	v1.POST("/auth/register", controller.Register)
 	v1.POST("/auth/login", controller.Login)
@@ -32,6 +31,4 @@ func HomeRecommend(v1 *gin.RouterGroup) {
 	// MY SPACE
 	v1.GET("/:id", controller.Myspace)
 
-	// web-interface
-	v1.POST("/x/archive/like", middleware.AuthMiddleware(), web_interface.Like)
 }

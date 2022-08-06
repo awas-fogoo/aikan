@@ -32,7 +32,7 @@ func InitDB() *gorm.DB {
 	}
 
 	db.AutoMigrate(&model.User{})
-	db.AutoMigrate(&model.ContentList{})
+	db.AutoMigrate(&model.ChannelList{})
 	db.AutoMigrate(&model.SwiperList{})
 
 	return db

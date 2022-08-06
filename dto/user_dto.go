@@ -15,3 +15,10 @@ func ToUserDto(user model.User) UserDto {
 		Uid:   user.Uid,
 	}
 }
+
+type RegUser struct {
+	Name     string
+	Email    string
+	Password string
+	Code     string
+}

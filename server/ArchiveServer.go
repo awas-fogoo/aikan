@@ -8,6 +8,7 @@ import (
 	"net/smtp"
 )
 
+// SendVerificationCode server发送验证码
 func SendVerificationCode(em string, code string) bool {
 
 	e := email.NewEmail()
@@ -38,6 +39,7 @@ func SendVerificationCode(em string, code string) bool {
 	return true
 }
 
+// VerificationCode redis校验验证码
 func VerificationCode(em string, code string) bool {
 	if len(code) == 0 {
 		return false
