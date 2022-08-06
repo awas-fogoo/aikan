@@ -6,10 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func HomeRecommend(v1 *gin.RouterGroup) {
+func HomeRouter(v1 *gin.RouterGroup) {
 
 	// 获取首页推荐图片列表
-	v1.GET("/home", controller.GetHomeList)
+	v1.GET("/home", controller.HomeSwiperList)
 
 	// 获取推荐图片详情播放页面
 	v1.GET("/channel/:id", controller.GetTopChannelDetail)

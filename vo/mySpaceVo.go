@@ -1,6 +1,6 @@
-package dto
+package vo
 
-type MySpace struct {
+type MySpaceVo struct {
 	Name     string `json:"name"`
 	Uid      string `json:"uid"`
 	ImgUrl   string `json:"imgUrl"`

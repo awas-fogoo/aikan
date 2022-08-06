@@ -1,8 +1,13 @@
 package model
 
+import (
+	"github.com/jinzhu/gorm"
+)
+
+// SwiperList 轮播图
 type SwiperList struct {
-	Id        string `gorm:"primary_key" json:"id"`
-	Uid       string `gorm:"int(100);unique;not null" json:"uid"`
-	ImgUrl    string `gorm:"varchar(255);not null" json:"imgUrl"`
-	VideoHref string `gorm:"varchar(255);not null" json:"videoHref"`
+	gorm.Model
+	ImgUrl  string `gorm:"varchar(255);not null"`
+	VideoId string `gorm:"varchar(255);unique;not null"`
+	Uid     string `gorm:"int(100);unique;not null"`
 }

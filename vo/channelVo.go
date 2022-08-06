@@ -1,6 +1,6 @@
-package dto
+package vo
 
-type ChannelLise struct {
+type ChannelListVo struct {
 	CreateTime string `json:"time"`
 	ImgUrl     string `json:"imgUrl"`
 	Hot        string `json:"hot"`
@@ -21,7 +21,7 @@ type ChannelLise struct {
 	Uid        string `json:"uid"`
 }
 
-type UpRecommend struct {
+type UpRecommendVo struct {
 	Uid      string `json:"uid"`
 	ImgUrl   string `json:"imgUrl"`
 	VideoUrl string `json:"videoUrl"`

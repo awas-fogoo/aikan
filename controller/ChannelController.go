@@ -2,8 +2,8 @@ package controller
 
 import (
 	"awesomeProject0511/common"
-	"awesomeProject0511/dto"
 	"awesomeProject0511/model"
+	"awesomeProject0511/vo"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"net/http"
@@ -11,8 +11,8 @@ import (
 )
 
 type DataAll struct {
-	ContentList []dto.ChannelLise `json:"contentList"`
-	UpRecommend []dto.UpRecommend `json:"upRecommend"`
+	ContentList []vo.ChannelListVo `json:"contentList"`
+	UpRecommend []vo.UpRecommendVo `json:"upRecommend"`
 }
 
 func GetTopChannelDetail(c *gin.Context) {
@@ -66,12 +66,12 @@ func GetTopChannelDetail(c *gin.Context) {
 	}
 
 	var y = DataAll{
-		[]dto.ChannelLise{
+		[]vo.ChannelListVo{
 			{list[0], list[1], list[2], list[3], list[4], list[5], list[6],
 				list[7], list[8], list[9], list[10], list[11], list[12],
 				list[13], list[14], list[15], list[16], list[17]},
 		},
-		[]dto.UpRecommend{
+		[]vo.UpRecommendVo{
 			{listRec[8], listRec[9], listRec[10], listRec[11]},
 			{listRec[12], listRec[13], listRec[14], listRec[15]},
 			{listRec[0], listRec[1], listRec[2], listRec[3]},

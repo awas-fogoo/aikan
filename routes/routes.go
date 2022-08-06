@@ -10,7 +10,7 @@ func CollectRouter(r *gin.Engine) *gin.Engine {
 	r.Use(middleware.CORSMiddleware())
 	v1 := r.Group("/api/v1")
 	{
-		HomeRecommend(v1)
+		HomeRouter(v1)
 	}
 
 	return r

@@ -7,6 +7,7 @@ import (
 	"awesomeProject0511/response"
 	"awesomeProject0511/server"
 	"awesomeProject0511/util"
+	"awesomeProject0511/vo"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -21,7 +22,7 @@ import (
 func SendVerificationCode(c *gin.Context) {
 	//email := c.PostForm("email")
 	//ajax获取参数
-	regUser := dto.RegUser{}
+	regUser := vo.UserVo{}
 	c.Bind(&regUser)
 	email := regUser.Email
 	fmt.Println(email)
@@ -70,7 +71,7 @@ func SendVerificationCode(c *gin.Context) {
 func Register(c *gin.Context) {
 
 	// ajax获取参数
-	regUser := dto.RegUser{}
+	regUser := vo.UserVo{}
 	c.Bind(&regUser)
 
 	/****** postman 调试参数	******/
