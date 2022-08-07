@@ -3,26 +3,26 @@ package vo
 import "time"
 
 type ChannelListVo struct {
-	Id        string    `json:"id"`
+	ID        uint      `json:"id"`
 	Cover     string    `json:"imgUrl"`
 	Hot       string    `json:"hot"`
 	Title     string    `json:"title"`
 	Desc      string    `json:"desc"`
 	Vid       string    `json:"videoUrl"`
 	Uid       string    `json:"uid"`
-	Clicks    string    `json:"see"`
+	Clicks    uint      `json:"see"`
 	CreatedAt time.Time `json:"time"`
 
-	HeadUrl    string `json:"headUrl"`
-	Name       string `json:"name"`
-	Fans       string `json:"fans"`
-	Follow     string `json:"follow"`
-	Danmu      string `json:"danmu"`
-	Like       string `json:"like"`
-	Dislike    string `json:"dislike"`
-	Collection string `json:"collection"`
-	Share      string `json:"share"`
-	Comment    string `json:"comment"`
+	//HeadUrl    string `json:"headUrl"`
+	//Name       string `json:"name"`
+	//Fans       string `json:"fans"`
+	//Follow     string `json:"follow"`
+	//Danmu      string `json:"danmu"`
+	//Like       string `json:"like"`
+	//Dislike    string `json:"dislike"`
+	//Collection string `json:"collection"`
+	//Share      string `json:"share"`
+	//Comment    string `json:"comment"`
 }
 
 type UpRecommendVo struct {

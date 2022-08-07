@@ -11,6 +11,7 @@ func CollectRouter(r *gin.Engine) *gin.Engine {
 	v1 := r.Group("/api/v1")
 	{
 		HomeRouter(v1)
+		ChannelRouter(v1)
 	}
 
 	return r
