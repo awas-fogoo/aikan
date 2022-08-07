@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-//随机生成10位大小写数字字符串
+// RandomString 随机生成10位大小写数字字符串
 func RandomString(n int) string {
 	var letters = []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_")
 	result := make([]byte, n)

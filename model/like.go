@@ -2,7 +2,7 @@ package model
 
 import "github.com/jinzhu/gorm"
 
-type Like struct {
+type ChannelLiked struct {
 	gorm.Model
 	Uid    uint    `gorm:"not null"`
 	Vid    uint    `gorm:"not null"`

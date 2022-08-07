@@ -38,7 +38,8 @@ func InitDB() *gorm.DB {
 		db.AutoMigrate(&model.ChannelList{})
 		db.AutoMigrate(&model.Details{})
 
-		db.AutoMigrate(&model.Like{})
+		db.AutoMigrate(&model.ChannelLiked{})
+		db.AutoMigrate(&model.ChannelClicks{})
 	}
 
 	return db
