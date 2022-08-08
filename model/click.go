@@ -10,7 +10,7 @@ type ChannelClicks struct {
 	Uid      string `gorm:"type:varchar(100);not null;unique"`
 	Vid      string `gorm:"type:varchar(100);not null"`
 	Duration uint   `gorm:"default:0"`
-	loc      uint   `gorm:"default:0"`
-	ip       string `gorm:"type:varchar(50)"`
-	mac      string `gorm:"type:varchar(100)"`
+	Loc      uint   `gorm:"default:0"`
+	Ip       string `gorm:"type:varchar(50)"`
+	Mac      string `gorm:"type:varchar(100)"`
 }
