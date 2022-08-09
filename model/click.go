@@ -7,7 +7,7 @@ import (
 type ChannelClicks struct {
 	gorm.Model
 	Click    uint   `gorm:"default:0"`
-	Uid      string `gorm:"type:varchar(100);not null;unique"`
+	Uid      uint   `gorm:"not null;unique"`
 	Vid      string `gorm:"type:varchar(100);not null"`
 	Duration uint   `gorm:"default:0"`
 	Loc      uint   `gorm:"default:0"`

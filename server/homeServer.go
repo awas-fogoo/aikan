@@ -13,7 +13,7 @@ func GetSwiperListService() dto.RetStruct {
 	defer db.Close()
 
 	var swiperListVos []vo.SwiperListVo
-	db.Model(&model.SwiperList{}).Select("id, uid, img_url, video_id").Scan(&swiperListVos)
+	db.Model(&model.SwiperList{}).Select("id, uid, img_url, video_href").Scan(&swiperListVos)
 	return dto.RetStruct{
 		Ret: true,
 		Data: gin.H{

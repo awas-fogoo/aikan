@@ -6,6 +6,6 @@ import "github.com/gin-gonic/gin"
 type RetStruct struct {
 	Ret  bool   `json:"ret"`
 	Data gin.H  `json:"data"` //数据
-	Code uint   `json:"code"` //数据
-	Msg  string `json:"msg"`  //数据
+	Code uint   `json:"code"` //状态码
+	Msg  string `json:"msg"`  //信息
 }

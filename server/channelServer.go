@@ -12,7 +12,7 @@ func GetChannelService(vid string) dto.RetStruct {
 	db := common.InitDB()
 	defer db.Close()
 	var channelListVos []vo.ChannelListVo
-	db.Model(&model.ChannelList{}).Where("vid = ?", vid).Scan(&channelListVos)
+	db.Model(&model.ChannelVideo{}).Where("vid = ?", vid).Scan(&channelListVos)
 	return dto.RetStruct{
 		Ret: true,
 		Data: gin.H{
@@ -24,7 +24,6 @@ func GetChannelService(vid string) dto.RetStruct {
 				"desc":   channelListVos[0].Desc,
 				"vid":    channelListVos[0].Vid,
 				"uid":    channelListVos[0].Uid,
-				"see":    channelListVos[0].Clicks,
 				"time":   channelListVos[0].CreatedAt.Format("2006-01-02 15:04:05"),
 			},
 		},

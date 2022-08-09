@@ -5,7 +5,7 @@ import "github.com/jinzhu/gorm"
 type Details struct {
 	gorm.Model
 	//所属视频
-	Vid uint `gorm:"index"`
+	Vid uint `gorm:"unique;not null"`
 	//分P使用的标题
 	Title string `gorm:"type:varchar(50);"`
 	//不同分辨率

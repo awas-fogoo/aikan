@@ -10,7 +10,6 @@ type ChannelListVo struct {
 	Desc      string    `json:"desc"`
 	Vid       string    `json:"videoUrl"`
 	Uid       string    `json:"uid"`
-	Clicks    uint      `json:"see"`
 	CreatedAt time.Time `json:"time"`
 
 	//HeadUrl    string `json:"headUrl"`
@@ -30,4 +29,7 @@ type UpRecommendVo struct {
 	ImgUrl   string `json:"imgUrl"`
 	VideoUrl string `json:"videoUrl"`
 	Title    string `json:"title"`
+}
+type VideoVo struct {
+	Vid string `json:"vid"`
 }

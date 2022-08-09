@@ -35,7 +35,7 @@ func InitDB() *gorm.DB {
 	db.AutoMigrate(&model.SwiperList{})
 	{
 		// channel
-		db.AutoMigrate(&model.ChannelList{})
+		db.AutoMigrate(&model.ChannelVideo{})
 		db.AutoMigrate(&model.Details{})
 
 		db.AutoMigrate(&model.ChannelLiked{})

@@ -15,7 +15,6 @@ import (
 	"log"
 	"net/http"
 	"regexp"
-	"strconv"
 	"time"
 )
 
@@ -126,8 +125,7 @@ func Register(c *gin.Context) {
 	//查询上一个uid是多少进行递增
 	user := model.User{}
 	db.Last(&user)
-	atoi_uid, _ := strconv.Atoi(user.Uid)
-	atoi_uid += 1
+	user.Uid += 1
 
 	//加密处理
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -143,7 +141,7 @@ func Register(c *gin.Context) {
 		Name:     name,
 		Email:    email,
 		Password: encodePWD,
-		Uid:      strconv.Itoa(atoi_uid),
+		Uid:      user.Uid,
 	}
 	db.Create(&newUser)
 
