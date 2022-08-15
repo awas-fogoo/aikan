@@ -8,5 +8,5 @@ import (
 
 func ChannelRouter(v1 *gin.RouterGroup) {
 	v1.POST("/auth/channel/like", middleware.AuthMiddleware(), controller.Like)
-
+	v1.POST("/auth/channel/status", controller.Status)
 }

@@ -29,6 +29,15 @@ func LikeServer(vid string, uid uint) dto.RetStruct {
 	cont := LikeIdCount(rdb, ctx, vid)              // 看某一视频的总点赞量
 	//list := rdb.SMembers(ctx, videoUrl)
 	//fmt.Println(list) // 所有点赞的人
+	//c := model.ChannelLiked{
+	//	uid,
+	//	vid,
+	//	isLike,
+	//}
+	//db.Create(&c)
+	//if err := db.Create(&c).Error; err != nil {
+	//	fmt.Println("插入失败", err)
+	//}
 	return dto.RetStruct{
 		Ret: true,
 		Data: gin.H{
