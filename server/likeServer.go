@@ -24,20 +24,10 @@ func LikeServer(vid string, uid uint) dto.RetStruct {
 	}
 	rdb := common.InitCache()
 	ctx := common.Ctx
-	//isLike := IsLike(rdb, ctx, vid, uid)
+	//isLike := IsRedisLike(rdb, ctx, vid, uid)
 	likeStatus := LikeVidStatus(rdb, ctx, vid, uid) // 点赞功能实现
 	cont := LikeIdCount(rdb, ctx, vid)              // 看某一视频的总点赞量
 	//list := rdb.SMembers(ctx, videoUrl)
-	//fmt.Println(list) // 所有点赞的人
-	//c := model.ChannelLiked{
-	//	uid,
-	//	vid,
-	//	isLike,
-	//}
-	//db.Create(&c)
-	//if err := db.Create(&c).Error; err != nil {
-	//	fmt.Println("插入失败", err)
-	//}
 	return dto.RetStruct{
 		Ret: true,
 		Data: gin.H{
@@ -47,8 +37,8 @@ func LikeServer(vid string, uid uint) dto.RetStruct {
 	}
 }
 
-// IsLike 判断当前用户是否点赞
-func IsLike(rdb *redis.Client, ctx context.Context, vid string, uid uint) bool {
+// IsRedisLike 判断当前用户是否点赞
+func IsRedisLike(rdb *redis.Client, ctx context.Context, vid string, uid uint) bool {
 	val, err := rdb.SIsMember(ctx, vid, uid).Result()
 	if err != nil {
 		panic(err)

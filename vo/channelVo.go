@@ -1,6 +1,8 @@
 package vo
 
-import "time"
+import (
+	"time"
+)
 
 type ChannelListVo struct {
 	ID        uint      `json:"id"`
@@ -32,4 +34,15 @@ type UpRecommendVo struct {
 }
 type VideoVo struct {
 	Vid string `json:"vid"`
+}
+
+type ChannelVideoInfoNumVo struct {
+	Clicks   string `json:"see"`
+	Danmu    string `json:"danmu"`
+	Likes    string `json:"like"`
+	Dislikes string `json:"dislike"`
+	Collects string `json:"collect"`
+	Comments string `json:"comment"`
+	Shares   string `json:"share"`
+	Vid      string `json:"vid"`
 }

@@ -6,3 +6,9 @@ type UserVo struct {
 	Password string
 	Code     string
 }
+
+type UserInfoVo struct {
+	Fans    string `json:"fans"`
+	Name    string `json:"name"`
+	HeadImg string `json:"headUrl"`
+}

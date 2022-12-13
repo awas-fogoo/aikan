@@ -12,3 +12,13 @@ type User struct {
 	Password string `gorm:"size:255;not null"`
 	Uid      uint   `gorm:"not null;unique"`
 }
+
+type UserInfo struct {
+	gorm.Model
+	Name     string `gorm:"type:varchar(50);not null"`
+	Fans     uint   `gorm:"default:0"`
+	Follow   uint   `gorm:"default:0"`
+	HeadImg  string `gorm:"type:varchar(30);not null"`
+	Personal string `gorm:"varchar(110);not null;unique"`
+	Uid      uint   `gorm:"not null;unique"`
+}
