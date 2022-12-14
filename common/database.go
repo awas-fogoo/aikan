@@ -31,12 +31,14 @@ func InitDB() *gorm.DB {
 		panic("faild to connect database ,err :" + err.Error())
 	}
 
+	// 用户数据库
 	db.AutoMigrate(&model.User{})
+	// 轮播图数据库
 	db.AutoMigrate(&model.SwiperList{})
 	{
 		// channel
 		db.AutoMigrate(&model.ChannelVideo{})
-		db.AutoMigrate(&model.Details{})
+		//db.AutoMigrate(&model.Details{})
 		// channel recommend
 		db.AutoMigrate(&model.ChannelRecommend{})
 		// channel userinfo
@@ -44,8 +46,8 @@ func InitDB() *gorm.DB {
 		// channel video info num
 		db.AutoMigrate(&model.ChannelVideoInfoNum{})
 
-		db.AutoMigrate(&model.ChannelLiked{})
-		db.AutoMigrate(&model.ChannelClicks{})
+		//db.AutoMigrate(&model.ChannelLiked{})
+		//db.AutoMigrate(&model.ChannelClicks{})
 	}
 
 	return db
