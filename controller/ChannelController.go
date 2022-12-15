@@ -22,6 +22,5 @@ func GetTopChannelDetail(c *gin.Context) {
 	// 视频播放页面
 	res := server.GetChannelService(videoUrl)
 	c.JSON(200, res)
-	// 视频播放页面下的recommend
 
 }

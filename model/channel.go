@@ -15,6 +15,7 @@ type ChannelVideo struct {
 	Weights     float32   `gorm:"default:0"` //视频权重
 	Review      int       `gorm:"not null"`  //审核状态
 	PartitionID uint      `gorm:"default:0"` //分区ID
+	Time        uint      `gorm:"default:0"` // time
 }
 
 type ChannelRecommend struct {
@@ -27,14 +28,15 @@ type ChannelRecommend struct {
 
 type ChannelVideoInfoNum struct {
 	gorm.Model
-	Clicks   uint   `gorm:"not null;default:0"`
-	Danmu    uint   `gorm:"not null;default:0"`
-	Likes    uint   `gorm:"not null;default:0"`
-	Dislikes uint   `gorm:"not null;default:0"`
-	Collects uint   `gorm:"not null;default:0"`
-	Comments uint   `gorm:"not null;default:0"`
-	Shares   uint   `gorm:"not null;default:0"`
-	Vid      string `gorm:"not null;unique"`
+	Click      uint   `gorm:"not null;default:0"`
+	Danmu      uint   `gorm:"not null;default:0"`
+	Like       uint   `gorm:"not null;default:0"`
+	Dislike    uint   `gorm:"not null;default:0"`
+	Collection uint   `gorm:"not null;default:0"`
+	Comment    uint   `gorm:"not null;default:0"`
+	Share      uint   `gorm:"not null;default:0"`
+	Vid        string `gorm:"not null;unique"`
+	Uid        uint   `gorm:"not null;unique"`
 }
 
 type ChannelClicks struct {

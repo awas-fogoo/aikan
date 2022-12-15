@@ -1,29 +1,25 @@
 package vo
 
-import (
-	"time"
-)
-
 type ChannelListVo struct {
-	ID        uint      `json:"id"`
-	Cover     string    `json:"imgUrl"`
-	Hot       string    `json:"hot"`
-	Title     string    `json:"title"`
-	Desc      string    `json:"desc"`
-	Vid       string    `json:"videoUrl"`
-	Uid       string    `json:"uid"`
-	CreatedAt time.Time `json:"time"`
-
-	//HeadUrl    string `json:"headUrl"`
-	//Name       string `json:"name"`
-	//Fans       string `json:"fans"`
-	//Follow     string `json:"follow"`
-	//Danmu      string `json:"danmu"`
-	//Like       string `json:"like"`
-	//Dislike    string `json:"dislike"`
-	//Collection string `json:"collection"`
-	//Share      string `json:"share"`
-	//Comment    string `json:"comment"`
+	ID         uint   `json:"id"`
+	Cover      string `json:"imgUrl"`
+	Hot        string `json:"hot"`
+	Title      string `json:"title"`
+	Desc       string `json:"desc"`
+	Vid        string `json:"videoUrl"`
+	Uid        string `json:"uid"`
+	Time       string `json:"time"`
+	HeadImg    string `json:"headUrl"`
+	Name       string `json:"name"`
+	Click      string `json:"see"`
+	Fans       string `json:"fans"`
+	Follow     string `json:"follow"`
+	Danmu      string `json:"danmu"`
+	Like       string `json:"like"`
+	Dislike    string `json:"dislike"`
+	Collection string `json:"collection"`
+	Share      string `json:"share"`
+	Comment    string `json:"comment"`
 }
 
 type UpRecommendVo struct {
@@ -37,12 +33,13 @@ type VideoVo struct {
 }
 
 type ChannelVideoInfoNumVo struct {
-	Clicks   string `json:"see"`
-	Danmu    string `json:"danmu"`
-	Likes    string `json:"like"`
-	Dislikes string `json:"dislike"`
-	Collects string `json:"collect"`
-	Comments string `json:"comment"`
-	Shares   string `json:"share"`
-	Vid      string `json:"vid"`
+	Click      string `json:"see"`
+	Danmu      string `json:"danmu"`
+	Like       string `json:"like"`
+	Dislike    string `json:"dislike"`
+	Collection string `json:"collection"`
+	Comment    string `json:"comment"`
+	Share      string `json:"share"`
+	Vid        string `json:"vid"`
+	Uid        string `json:"uid"`
 }
