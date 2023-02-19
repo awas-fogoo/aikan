@@ -3,84 +3,64 @@ package server
 import (
 	"awesomeProject0511/common"
 	"awesomeProject0511/dto"
-	"awesomeProject0511/model"
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
+	"log"
+	"strconv"
 )
 
 func LikeServer(vid string, uid uint) dto.RetStruct {
-	db := common.InitDB()
-	defer db.Close()
-	var channel model.ChannelVideo
-	db.Where("vid = ?", vid).First(&channel)
-	//用户是否存在
-	if channel.ID == 0 {
-		return dto.RetStruct{
-			Ret:  false,
-			Code: 400,
-			Msg:  "视频不存在",
-		}
-	}
 	rdb := common.InitCache()
 	ctx := common.Ctx
-	//isLike := IsRedisLike(rdb, ctx, vid, uid)
+	//likeVidIsExistRedis := LikeVidIsExistRedis(rdb, ctx, vid)
+	//if likeVidIsExistRedis == 1 {
+	//	return dto.RetStruct{
+	//		Ret: true,
+	//	}
+	//}
 	likeStatus := LikeVidStatus(rdb, ctx, vid, uid) // 点赞功能实现
-	cont := LikeIdCount(rdb, ctx, vid)              // 看某一视频的总点赞量
-	//list := rdb.SMembers(ctx, videoUrl)
 	return dto.RetStruct{
 		Ret: true,
 		Data: gin.H{
-			"like": likeStatus,
-			"cont": cont,
+			"like_status": likeStatus,
 		},
 	}
 }
 
-// IsRedisLike 判断当前用户是否点赞
-func IsRedisLike(rdb *redis.Client, ctx context.Context, vid string, uid uint) bool {
-	val, err := rdb.SIsMember(ctx, vid, uid).Result()
+// LikeVidIsExistRedis 查看喜欢的vid是否存在redis里面
+func LikeVidIsExistRedis(rdb *redis.Client, ctx context.Context, vid string) uint {
+	vid = strconv.Itoa(1) + "_like_" + vid
+	result, err := rdb.Exists(ctx, vid).Result()
 	if err != nil {
-		panic(err)
+		log.Panicln(err)
+		return 0
 	}
-	if val == false {
-		//fmt.Println("user don't like it")
-		return false
-	}
-	return true
-
+	return uint(result)
 }
 
-// LikeVidStatus 点赞&&取消点赞
+// LikeVidStatus 点赞&&取消点赞 key uid+_like_+vid
 func LikeVidStatus(rdb *redis.Client, ctx context.Context, vid string, uid uint) bool {
-	val, err := rdb.SIsMember(ctx, vid, uid).Result()
+	key := strconv.Itoa(int(uid)) + "_like_" + vid
+	val, err := rdb.SIsMember(ctx, key, uid).Result()
 	if err != nil {
-		panic(err)
+		log.Panicln(err)
 		return false
 	}
 	// 添加
 	if val == false {
-		_, errAdd := rdb.SAdd(ctx, vid, uid).Result()
+		_, errAdd := rdb.SAdd(ctx, key, uid).Result()
 		if errAdd != nil {
-			panic(errAdd)
+			log.Panicln(errAdd)
 		}
 		return true
 	} else {
 		// 取消
-		_, errCal := rdb.SRem(ctx, vid, uid).Result()
+		_, errCal := rdb.SRem(ctx, key, uid).Result()
 		if errCal != nil {
-			panic(errCal)
+			log.Panicln(errCal)
 		}
 		return false
 
 	}
-}
-
-// LikeIdCount 获赞次数
-func LikeIdCount(rdb *redis.Client, ctx context.Context, vid string) int64 {
-	val, err := rdb.SCard(ctx, vid).Result()
-	if err != nil {
-		panic(err)
-	}
-	return val
 }

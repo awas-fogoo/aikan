@@ -17,11 +17,9 @@ func Status(c *gin.Context) {
 	videoVo := vo.VideoVo{}
 	c.Bind(&videoVo)
 
-	rdb := common.InitCache()
-	ctx := common.Ctx
-	vid := c.PostForm("vid")
-	//vid := videoVo.Vid
-	res := server.IsRedisLike(rdb, ctx, vid, uid)
+	//vid := c.PostForm("vid")
+	vid := videoVo.Vid
+	//res := server.IsRedisLike(rdb, ctx, vid, uid)
 	//cont := server.LikeIdCount(rdb, ctx, vid)
 
 	db := common.InitDB()
@@ -33,7 +31,6 @@ func Status(c *gin.Context) {
 	c.JSON(200, dto.RetStruct{
 		Ret: true,
 		Data: gin.H{
-			"like":         res,
 			"cont":         count,
 			"statusServer": statusServer,
 		},

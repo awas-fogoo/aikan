@@ -15,7 +15,8 @@ func Like(c *gin.Context) {
 	videoVo := vo.VideoVo{}
 	c.Bind(&videoVo)
 	//vid := c.PostForm("vid")
-	vid := videoVo.Vid
+	//vid := videoVo.Vid
+	vid := "123"
 	res := server.LikeServer(vid, uid)
 	c.JSON(200, res)
 
