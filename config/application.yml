@@ -17,3 +17,8 @@ redis:
   host: 127.0.0.1
   port: 6379
   password: aikan_root_980002_admin
+
+# 邮件发送配置
+email:
+  username: yassus@foxmail.com
+  password: hiermcvuwdfobiec

@@ -48,16 +48,14 @@ func GetChannelService(vid string) dto.RetStruct {
 	}
 
 	// 创建视频信息缓存缓存
-	createVideoNumCache := CreateVideoNumCache(rdb, ctx, vid, channelListVos, upRecommendVos)
-	log.SetPrefix("[" + vid + "]")
-	log.Println("create redis cache: ", createVideoNumCache)
+	if !CreateVideoNumCache(rdb, ctx, vid, channelListVos, upRecommendVos) {
+		log.Println("create CreateVideoNumCache false")
+	}
 	return res
 }
 
 // CreateVideoNumCache 创建视频数据数量缓存
 func CreateVideoNumCache(rdb *redis.Client, ctx context.Context, vid string, channelListVos []vo.ChannelListVo, upRecommendVos []vo.UpRecommendVo) bool {
-	durationNum := 15 * time.Minute // 格式
-
 	// 命名格式为vid+返回格式的json
 	// 序列化两个map
 	data, err := json.Marshal(channelListVos)
@@ -67,7 +65,7 @@ func CreateVideoNumCache(rdb *redis.Client, ctx context.Context, vid string, cha
 		log.Println("序列化_channelList失败")
 		return false
 	} else {
-		errStatus := rdb.Set(ctx, vid+"_channelList", string(data), durationNum).Err()
+		errStatus := rdb.Set(ctx, vid+"_channelList", string(data), 6*time.Second).Err()
 		if errStatus != nil {
 			log.Panicln("serialize crete redis key false:", errStatus)
 			return false
@@ -78,7 +76,7 @@ func CreateVideoNumCache(rdb *redis.Client, ctx context.Context, vid string, cha
 		log.Println("序列化_upRecommend失败")
 		return false
 	} else {
-		errStatus := rdb.Set(ctx, vid+"_upRecommend", string(data2), durationNum).Err()
+		errStatus := rdb.Set(ctx, vid+"_upRecommend", string(data2), 10*time.Minute).Err()
 		if errStatus != nil {
 			log.Panicln("serialize crete redis key false:", errStatus)
 			return false

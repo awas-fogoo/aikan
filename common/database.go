@@ -46,6 +46,8 @@ func InitDB() *gorm.DB {
 		// channel video info num
 		db.AutoMigrate(&model.ChannelVideoInfoNum{})
 
+		db.AutoMigrate(&model.VideoRelation{})
+
 		//db.AutoMigrate(&model.ChannelLiked{})
 		//db.AutoMigrate(&model.ChannelClicks{})
 	}

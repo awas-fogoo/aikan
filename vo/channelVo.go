@@ -29,6 +29,7 @@ type UpRecommendVo struct {
 	Title    string `json:"title"`
 }
 type VideoVo struct {
+	Uid uint   `json:"uid"`
 	Vid string `json:"vid"`
 }
 
