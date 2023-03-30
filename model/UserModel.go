@@ -62,6 +62,13 @@ type CommentRelation struct {
 	Level        uint //评论层级
 }
 
+type Role struct {
+	ID          uint   `gorm:"primary_key"`
+	Name        string `gorm:"unique"`
+	Description string
+	Permissions []Permission `gorm:"many2many:role_permission;"`
+}
+
 type Permission struct {
 	ID          uint   `gorm:"primary_key"`
 	Name        string `gorm:"unique"`
@@ -69,9 +76,7 @@ type Permission struct {
 	Roles       []Role `gorm:"many2many:role_permission;"`
 }
 
-type Role struct {
-	ID          uint   `gorm:"primary_key"`
-	Name        string `gorm:"unique"`
-	Description string
-	Permissions []Permission `gorm:"many2many:role_permission;"`
+type RolePermission struct {
+	RoleID       uint
+	PermissionID uint
 }
