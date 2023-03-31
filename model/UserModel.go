@@ -23,20 +23,32 @@ type User struct {
 
 type Video struct {
 	gorm.Model
-	Title       string `gorm:"not null"`
-	Description string `gorm:"not null"`
-	Url         string `gorm:"not null"`
-	CoverUrl    string `gorm:"not null"`
-	Views       int
-	Likes       int
-	Collections int
-	Quality     string `gorm:"not null"`
-	CategoryID  uint
+	Title       string   `gorm:"not null"`
+	Description string   `gorm:"not null"`
+	Url         string   `gorm:"not null"`
+	CoverUrl    string   `gorm:"not null"`
+	Views       int      `gorm:"default:0"`
+	Likes       int      `gorm:"default:0"`
+	Collections int      `gorm:"default:0"`
+	Duration    int      `gorm:"default:0"`
+	Partition   string   `gorm:"default:0"`
+	Quality     string   `gorm:"not null"`
+	CategoryID  uint     `gorm:"not null"`
 	Category    Category `gorm:"foreignKey:CategoryID"`
-	UserID      uint
-	User        User `gorm:"foreignKey:UserID"`
+	UserID      uint     `gorm:"not null"`
+	User        User     `gorm:"foreignKey:UserID"`
 	Comments    []Comment
-	Tags        string `gorm:"not null"`
+	Tags        string    `gorm:"not null"`
+	Danmakus    []Danmaku `gorm:"foreignKey:VideoID"`
+}
+
+type Danmaku struct {
+	gorm.Model
+	Content string `gorm:"not null"`
+	Color   string `gorm:"not null"`
+	Time    int    `gorm:"not null"`
+	VideoID uint   `gorm:"not null"`
+	Video   Video  `gorm:"foreignKey:VideoID"`
 }
 
 type Category struct {

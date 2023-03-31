@@ -16,7 +16,7 @@ func NewRetDTO(code int, message string, data interface{}) *RetDTO {
 
 // Success 返回成功结果
 func Success(data interface{}) *RetDTO {
-	return NewRetDTO(0, "成功", data)
+	return NewRetDTO(0, "success", data)
 }
 
 // Error 返回错误结果

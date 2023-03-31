@@ -43,7 +43,7 @@ func InitDB() *gorm.DB {
 	}()
 
 	//tx.AutoMigrate(&model.User{}, &model.Video{}, &model.Category{}, &model.Comment{}, &model.CommentRelation{})
-	if err := tx.AutoMigrate(&model.User{}, &model.Video{}, &model.Category{}, &model.Comment{}, &model.CommentRelation{}, &model.Role{}, &model.Permission{}, &model.RolePermission{}).Error; err != nil {
+	if err := tx.AutoMigrate(&model.User{}, &model.Video{}, &model.Category{}, &model.Comment{}, &model.CommentRelation{}, &model.Role{}, &model.Permission{}, &model.RolePermission{}, &model.Danmaku{}).Error; err != nil {
 		log.Fatalf("无法迁移表格：" + err.Error())
 	}
 	tx.Model(&model.User{}).AddUniqueIndex("idx_user_username", "username")
