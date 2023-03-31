@@ -38,7 +38,7 @@ type Video struct {
 	UserID      uint     `gorm:"not null"`
 	User        User     `gorm:"foreignKey:UserID"`
 	Comments    []Comment
-	Tags        string    `gorm:"not null"`
+	Tags        []string  `gorm:"type:text[]"`
 	Danmakus    []Danmaku `gorm:"foreignKey:VideoID"`
 }
 
