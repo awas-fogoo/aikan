@@ -55,6 +55,7 @@ type Category struct {
 	gorm.Model
 	Name        string `gorm:"not null"`
 	Description string `gorm:"not null"`
+	ParentID    uint   `gorm:"default:0"` // 父分类ID
 	Videos      []Video
 }
 
