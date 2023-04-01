@@ -34,7 +34,7 @@ type Video struct {
 	Partition   string   `gorm:"default:0"`
 	Quality     string   `gorm:"not null"`
 	CategoryID  uint     `gorm:"not null"`
-	Category    Category `gorm:"foreignKey:ParentID;"`
+	Category    Category `gorm:"foreignKey:CategoryID"`
 	UserID      uint     `gorm:"not null"`
 	User        User     `gorm:"foreignKey:UserID"`
 	Comments    []Comment
@@ -53,9 +53,8 @@ type Danmaku struct {
 
 type Category struct {
 	gorm.Model
-	Name        string `gorm:"not null"`
+	Name        string `gorm:"type:longtext;not null"`
 	Description string `gorm:"not null"`
-	ParentID    uint   `gorm:"default:0"` // 父分类ID
 	Videos      []Video
 }
 
