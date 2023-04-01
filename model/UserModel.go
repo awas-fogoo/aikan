@@ -34,11 +34,11 @@ type Video struct {
 	Partition   string   `gorm:"default:0"`
 	Quality     string   `gorm:"not null"`
 	CategoryID  uint     `gorm:"not null"`
-	Category    Category `gorm:"foreignKey:CategoryID"`
+	Category    Category `gorm:"foreignKey:ParentID;"`
 	UserID      uint     `gorm:"not null"`
 	User        User     `gorm:"foreignKey:UserID"`
 	Comments    []Comment
-	Tags        []string  `gorm:"type:text[]"`
+	Tags        string    `gorm:"type:longtext"`
 	Danmakus    []Danmaku `gorm:"foreignKey:VideoID"`
 }
 
