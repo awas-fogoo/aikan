@@ -43,11 +43,12 @@ func InitDB() *gorm.DB {
 	}()
 
 	//tx.AutoMigrate(&model.User{}, &model.Video{}, &model.Category{}, &model.Comment{}, &model.CommentRelation{})
-	if err := tx.AutoMigrate(&model.User{}, &model.Video{}, &model.Category{}, &model.Comment{}, &model.CommentRelation{}, &model.Role{}, &model.Permission{}, &model.RolePermission{}, &model.Danmaku{}).Error; err != nil {
+	if err := tx.AutoMigrate(&model.User{}, &model.Video{}, &model.Category{}, &model.Comment{}, &model.CommentRelation{}, &model.Role{}, &model.Permission{}, &model.RolePermission{}, &model.Danmaku{}, &model.UserLike{}, &model.UserCollection{}, &model.Tag{}, &model.VideoTag{}).Error; err != nil {
 		log.Fatalf("无法迁移表格：" + err.Error())
 	}
 	tx.Model(&model.User{}).AddUniqueIndex("idx_user_username", "username")
 	tx.Model(&model.Video{}).AddIndex("idx_video_title", "title")
+	tx.Model(&model.Video{}).AddIndex("idx_video_description", "description")
 	tx.Model(&model.Video{}).AddForeignKey("category_id", "categories(id)", "CASCADE", "CASCADE")
 	tx.Model(&model.Video{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 	tx.Model(&model.Comment{}).AddIndex("idx_comment_user_video", "user_id", "video_id")

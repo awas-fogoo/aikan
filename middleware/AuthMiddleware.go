@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"awesomeProject0511/common"
+	"awesomeProject0511/dto"
 	"awesomeProject0511/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -13,9 +14,9 @@ func AuthMiddleware() gin.HandlerFunc {
 		// get Authorization header
 		tokenString := c.GetHeader("Authorization")
 
-		//validate token formate 判断是否以bearer开头 Abort返回不向下执行函数了
+		//validate token format 判断是否以bearer开头 Abort返回不向下执行函数了
 		if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer ") {
-			c.JSON(http.StatusUnauthorized, gin.H{"code": 402, "msg": "权限不足"})
+			c.JSON(http.StatusUnauthorized, dto.Error(402, "权限不足"))
 			c.Abort()
 			return
 		}
@@ -25,7 +26,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		token, claims, err := common.ParseToken(tokenString)
 		if err != nil || !token.Valid {
-			c.JSON(http.StatusUnauthorized, gin.H{"code": 402, "msg": "权限不足"})
+			c.JSON(http.StatusUnauthorized, dto.Error(402, "权限不足"))
 			c.Abort()
 			return
 		}
@@ -38,7 +39,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		//用户是否存在
 		if user.ID == 0 {
-			c.JSON(http.StatusUnauthorized, gin.H{"code": 402, "msg": "权限不足"})
+			c.JSON(http.StatusUnauthorized, dto.Error(402, "权限不足"))
 			c.Abort()
 			return
 		}

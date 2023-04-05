@@ -12,13 +12,28 @@ type User struct {
 	Nickname    string       `gorm:"not null"`
 	Email       string       `gorm:"not null;index"`
 	AvatarUrl   string       `gorm:"not null"`
+	Gender      string       `gorm:"not null;default:'unknown'"` // 性别，非空，默认值为unknown
+	Age         uint         `gorm:"not null;default:0"`         // 年龄，非空，默认值为0
 	Roles       []Role       `gorm:"many2many:user_roles;"`
 	Permissions []Permission `gorm:"many2many:user_permissions;"`
 	Videos      []Video
-	Likes       []Video `gorm:"many2many:user_likes;association_foreignkey:id;foreignkey:id"`
+	Likes       []Video
+	Collections []Video
 	Followees   []*User `gorm:"many2many:user_followees;ForeignKey:FollowerID"`
 	Followers   []*User `gorm:"many2many:user_followers;ForeignKey:FolloweeID"`
 	Comments    []Comment
+}
+
+type UserLike struct {
+	gorm.Model
+	UserID  uint `gorm:"unique_index:user_id_video_like_id"`
+	VideoID uint `gorm:"unique_index:user_id_video_like_id"`
+}
+
+type UserCollection struct {
+	gorm.Model
+	UserID  uint `gorm:"unique_index:user_id_video_like_id"`
+	VideoID uint `gorm:"unique_index:user_id_video_like_id"`
 }
 
 type Video struct {
@@ -27,28 +42,42 @@ type Video struct {
 	Description string   `gorm:"not null"`
 	Url         string   `gorm:"not null"`
 	CoverUrl    string   `gorm:"not null"`
-	Views       int      `gorm:"default:0"`
-	Likes       int      `gorm:"default:0"`
-	Collections int      `gorm:"default:0"`
-	Duration    int      `gorm:"default:0"`
-	Partition   string   `gorm:"default:0"`
+	Views       uint     `gorm:"default:0"`
+	Likes       uint     `gorm:"default:0"`
+	Collections uint     `gorm:"default:0"`
+	Duration    float64  `gorm:"default:0"`
+	PartitionID uint     `gorm:"default:0"`
+	Review      uint     `gorm:"default:0"`
+	Weights     float32  `gorm:"default:0"`
 	Quality     string   `gorm:"not null"`
 	CategoryID  uint     `gorm:"not null"`
 	Category    Category `gorm:"foreignKey:CategoryID"`
 	UserID      uint     `gorm:"not null"`
 	User        User     `gorm:"foreignKey:UserID"`
-	Comments    []Comment
-	Tags        string    `gorm:"type:longtext"`
-	Danmakus    []Danmaku `gorm:"foreignKey:VideoID"`
+	Tag         []Tag
+}
+
+type Tag struct {
+	gorm.Model
+	Name string `gorm:"uniqueIndex"`
+}
+
+// VideoTag 中间表
+type VideoTag struct {
+	gorm.Model
+	VideoID uint
+	TagID   uint
 }
 
 type Danmaku struct {
 	gorm.Model
+	VideoID uint   `gorm:"not null;index"`
 	Content string `gorm:"not null"`
 	Color   string `gorm:"not null"`
-	Time    int    `gorm:"not null"`
-	VideoID uint   `gorm:"not null"`
-	Video   Video  `gorm:"foreignKey:VideoID"`
+	Time    uint64 `gorm:"not null"`
+	Type    uint8  `gorm:"default:0"` //类型0滚动;1顶部;2底部
+	UserID  uint   `gorm:"not null"`
+	User    User   `gorm:"foreignKey:UserID"`
 }
 
 type Category struct {
@@ -61,8 +90,9 @@ type Category struct {
 type Comment struct {
 	gorm.Model
 	Content  string `gorm:"not null"`
-	UserID   uint
-	VideoID  uint
+	UserID   uint   `gorm:"not null"`
+	User     User   `gorm:"foreignKey:UserID"`
+	VideoID  uint   `gorm:"not null"`
 	ParentID *uint
 	Children []Comment `gorm:"foreignkey:ParentID"`
 }

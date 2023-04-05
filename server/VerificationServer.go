@@ -1,8 +1,6 @@
 package server
 
 import (
-	"awesomeProject0511/common"
-	"awesomeProject0511/util"
 	"fmt"
 	"github.com/jordan-wright/email"
 	"github.com/spf13/viper"
@@ -38,20 +36,5 @@ func SendVerificationCode(em string, code string) bool {
 	//if err != nil {
 	// return
 	//} // 附加文件
-	return true
-}
-
-// VerificationCode redis校验验证码
-func VerificationCode(em string, code string) bool {
-	if len(code) == 0 {
-		return false
-	}
-	rdb := common.InitCache()
-	regEmail := util.ReEmail(em)
-	dbCode, _ := rdb.Get(common.Ctx, regEmail).Result()
-	if dbCode == "" || dbCode != code {
-		return false
-	}
-	rdb.Del(common.Ctx, regEmail) // 删除key
 	return true
 }

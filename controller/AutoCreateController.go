@@ -14,7 +14,8 @@ import (
 func AutoCreateUser(c *gin.Context) {
 
 	//addUser(c)
-	addCategory(c)
+	//addCategory(c)
+	addTag(c)
 
 }
 
@@ -24,13 +25,15 @@ func addUser(c *gin.Context) {
 	var users []*model.User
 	err := util.WithTransaction(db, func(tx *gorm.DB) error {
 		// 增删改操作
-		for i := 0; i < 10; i++ {
+		for i := 0; i < 20; i++ {
 			user := &model.User{
 				Username:  fmt.Sprintf("user%d", i),
-				Password:  fmt.Sprintf("123456"),
+				Password:  fmt.Sprintf("$2a$10$JfgQTe0bp.Xgd3zmYcHOwObCQ2nC6eMNIppT2z/jwdQonFZbs4rnK"),
 				Nickname:  fmt.Sprintf("nickname%d", i),
 				Email:     fmt.Sprintf("user%d@bup.pub", i),
 				AvatarUrl: fmt.Sprintf("https://bup.pub/%d.jpg", i),
+				Gender:    "男",
+				Age:       uint(i),
 			}
 			if err := tx.Create(user).Error; err != nil {
 				return err
@@ -86,6 +89,40 @@ func addCategory(c *gin.Context) {
 		// 为添加分类
 		for i := range categories {
 			err := tx.Create(&categories[i]).Error
+			if err != nil {
+				panic(err)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		// 发生错误，需要回滚事务
+		log.Fatalf(fmt.Sprintf("Failed to execute transactions: %v", err))
+	}
+	c.JSON(200, dto.Success("category data add  success"))
+	return
+}
+
+func addTag(c *gin.Context) {
+	db := common.InitDB()
+	defer db.Close()
+	err := util.WithTransaction(db, func(tx *gorm.DB) error {
+		// 创建新的标签
+		tags := []model.Tag{
+			{Name: "标签1"},
+			{Name: "标签2"},
+			{Name: "标签3"},
+			{Name: "标签4"},
+			{Name: "标签5"},
+			{Name: "标签6"},
+			{Name: "标签7"},
+			{Name: "标签8"},
+			{Name: "标签9"},
+			{Name: "标签10"},
+		}
+		// 为添加标签
+		for i := range tags {
+			err := tx.Create(&tags[i]).Error
 			if err != nil {
 				panic(err)
 			}

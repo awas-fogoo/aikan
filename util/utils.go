@@ -3,6 +3,8 @@ package util
 import (
 	"fmt"
 	"math/rand"
+	"net/url"
+	"strings"
 	"time"
 )
 
@@ -30,4 +32,29 @@ func RandomCode(n int) string {
 
 func ReEmail(email string) string {
 	return fmt.Sprintf("reg:%s", email)
+}
+
+func IsValidURL(urlStr string) bool {
+	// Parse the URL
+	u, err := url.Parse(urlStr)
+	if err != nil {
+		return false
+	}
+
+	// Check if the scheme is missing or not supported
+	if u.Scheme == "" || !(strings.HasPrefix(u.Scheme, "http") || strings.HasPrefix(u.Scheme, "ftp")) {
+		return false
+	}
+
+	// Check if the host is missing or invalid
+	if u.Host == "" || len(u.Host) > 253 {
+		return false
+	}
+
+	// Check if the path is invalid
+	if strings.Contains(u.Path, "\\") {
+		return false
+	}
+
+	return true
 }
