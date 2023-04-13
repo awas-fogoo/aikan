@@ -7,21 +7,34 @@ import (
 
 type User struct {
 	gorm.Model
-	Username    string       `gorm:"not null;uniqueIndex"`
-	Password    string       `gorm:"not null"`
-	Nickname    string       `gorm:"not null"`
-	Email       string       `gorm:"not null;index"`
-	AvatarUrl   string       `gorm:"not null"`
-	Gender      string       `gorm:"not null;default:'unknown'"` // 性别，非空，默认值为unknown
-	Age         uint         `gorm:"not null;default:0"`         // 年龄，非空，默认值为0
-	Roles       []Role       `gorm:"many2many:user_roles;"`
-	Permissions []Permission `gorm:"many2many:user_permissions;"`
-	Videos      []Video
-	Likes       []Video
-	Collections []Video
-	Followees   []*User `gorm:"many2many:user_followees;ForeignKey:FollowerID"`
-	Followers   []*User `gorm:"many2many:user_followers;ForeignKey:FolloweeID"`
-	Comments    []Comment
+	Username      string `gorm:"not null;uniqueIndex"`
+	Nickname      string `gorm:"not null"`
+	Email         string `gorm:"not null;index"`
+	AvatarUrl     string `gorm:"default:'unknown'"` // 头像，默认值为unknown
+	BackgroundUrl string `gorm:"default:'unknown'"` // 背景图片，默认值为unknown
+	Gender        string `gorm:"default:'unknown'"` // 性别，默认值为unknown
+	Age           uint   `gorm:"default:0"`         // 年龄，默认值为0
+	Country       string `gorm:"default:'unknown'"` // 国家，默认值为unknown
+	City          string `gorm:"default:'unknown'"` // 城市，默认值为unknown
+	Address       string `gorm:"default:'unknown'"` // 地址，默认值为unknown
+	AboutMe       string `gorm:"default:'unknown'"` // 关于我，默认值为unknown
+	Videos        []Video
+	Views         []Video
+	Likes         []Video
+	Collections   []Video
+	Following     []*User `gorm:"many2many:user_followings;association_jointable_foreignkey:follower_id"`
+	Followers     []*User `gorm:"many2many:user_followers;association_jointable_foreignkey:following_id"`
+	Comments      []Comment
+	Roles         []Role       `gorm:"many2many:user_roles;"`
+	Permissions   []Permission `gorm:"many2many:user_permissions;"`
+	Auth          Auth
+}
+
+// Auth 定义认证模型
+type Auth struct {
+	ID       uint `gorm:"primary_key"`
+	UserID   uint `gorm:"uniqueIndex"`
+	Password string
 }
 
 type UserLike struct {
@@ -39,7 +52,7 @@ type UserCollection struct {
 type Video struct {
 	gorm.Model
 	Title       string   `gorm:"not null"`
-	Description string   `gorm:"not null"`
+	Description string   `gorm:"not null;type:varchar(1000);"`
 	Url         string   `gorm:"not null"`
 	CoverUrl    string   `gorm:"not null"`
 	Views       uint     `gorm:"default:0"`
@@ -121,4 +134,11 @@ type Permission struct {
 type RolePermission struct {
 	RoleID       uint
 	PermissionID uint
+}
+
+type SearchRecord struct {
+	gorm.Model
+	UserID   uint   // 用户ID
+	Keyword  string // 搜索关键词
+	Location string // 搜索地点
 }

@@ -35,3 +35,7 @@ func AddCommentVideoController(c *gin.Context) {
 func GetCommentVideoController(c *gin.Context) {
 	server.GerCommentVideoServer(c)
 }
+
+func GetHotVideoController(c *gin.Context) {
+	server.GetHotVideoServer(c)
+}

@@ -6,6 +6,7 @@ import (
 	"awesomeProject0511/model"
 	"awesomeProject0511/util"
 	"bytes"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"log"
@@ -29,6 +30,7 @@ func UploadVideoServer(c *gin.Context) {
 	coverUrl := c.PostForm("cover_url")
 	tags := c.PostForm("tags")
 	categoryId := util.StringToUint(c.PostForm("category_id"))
+	fmt.Println(categoryId)
 
 	if len(title) == 0 && len(desc) == 0 && categoryId <= 0 && util.IsValidURL(url) && util.IsValidURL(url) {
 		c.JSON(0, dto.Error(-1, "cannot be empty or url acquisition failed"))
@@ -59,7 +61,7 @@ func UploadVideoServer(c *gin.Context) {
 		UserID:      userDto.ID,
 	}
 	// 创建新的视频标签关联
-	if err := CreateVideoWithTags(db, &video, tagNmaes); err != nil {
+	if err := createVideoWithTags(db, &video, tagNmaes); err != nil {
 		log.Fatal(err)
 	}
 	// 将文件上传到云端或者保存到本地，获取文件的 URL
@@ -80,11 +82,11 @@ func UploadVideoServer(c *gin.Context) {
 		log.Println(err)
 		return
 	}
-	c.JSON(0, dto.Success(&video))
+	c.JSON(0, dto.Success("上传成功"))
 }
 
 // CreateVideoWithTags 创建视频和标签，并建立多对多关系
-func CreateVideoWithTags(db *gorm.DB, video *model.Video, tagNames []string) error {
+func createVideoWithTags(db *gorm.DB, video *model.Video, tagNames []string) error {
 	// 创建视频
 	if err := db.Create(video).Error; err != nil {
 		return err

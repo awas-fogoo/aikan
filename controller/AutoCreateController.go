@@ -13,8 +13,8 @@ import (
 
 func AutoCreateUser(c *gin.Context) {
 
-	//addUser(c)
-	//addCategory(c)
+	addUser(c)
+	addCategory(c)
 	addTag(c)
 
 }
@@ -28,13 +28,13 @@ func addUser(c *gin.Context) {
 		for i := 0; i < 20; i++ {
 			user := &model.User{
 				Username:  fmt.Sprintf("user%d", i),
-				Password:  fmt.Sprintf("$2a$10$JfgQTe0bp.Xgd3zmYcHOwObCQ2nC6eMNIppT2z/jwdQonFZbs4rnK"),
 				Nickname:  fmt.Sprintf("nickname%d", i),
 				Email:     fmt.Sprintf("user%d@bup.pub", i),
 				AvatarUrl: fmt.Sprintf("https://bup.pub/%d.jpg", i),
 				Gender:    "男",
 				Age:       uint(i),
 			}
+			user.Auth.Password = fmt.Sprintf("$2a$10$JfgQTe0bp.Xgd3zmYcHOwObCQ2nC6eMNIppT2z/jwdQonFZbs4rnK")
 			if err := tx.Create(user).Error; err != nil {
 				return err
 			}
@@ -109,16 +109,37 @@ func addTag(c *gin.Context) {
 	err := util.WithTransaction(db, func(tx *gorm.DB) error {
 		// 创建新的标签
 		tags := []model.Tag{
-			{Name: "标签1"},
-			{Name: "标签2"},
-			{Name: "标签3"},
-			{Name: "标签4"},
-			{Name: "标签5"},
-			{Name: "标签6"},
-			{Name: "标签7"},
-			{Name: "标签8"},
-			{Name: "标签9"},
-			{Name: "标签10"},
+			{Name: "动作"},
+			{Name: "冒险"},
+			{Name: "喜剧"},
+			{Name: "犯罪"},
+			{Name: "爱情"},
+			{Name: "科幻"},
+			{Name: "悬疑"},
+			{Name: "恐怖"},
+			{Name: "灾难"},
+			{Name: "神秘"},
+			{Name: "励志"},
+			{Name: "纪录片"},
+			{Name: "奇幻"},
+			{Name: "战争"},
+			{Name: "童话"},
+			{Name: "音乐"},
+			{Name: "运动"},
+			{Name: "西部"},
+			{Name: "青春"},
+			{Name: "武侠"},
+			{Name: "轻喜剧"},
+			{Name: "历史"},
+			{Name: "玄幻"},
+			{Name: "竞技"},
+			{Name: "古装"},
+			{Name: "家庭"},
+			{Name: "谍战"},
+			{Name: "社会"},
+			{Name: "都市"},
+			{Name: "科幻动作"},
+			{Name: "青春校园"},
 		}
 		// 为添加标签
 		for i := range tags {

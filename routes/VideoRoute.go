@@ -15,4 +15,5 @@ func VideoRoute(v1 *gin.RouterGroup) {
 	v1.POST("/video/:id/collection", middleware.AuthMiddleware(), controller.AddCollectionVideoController)
 	v1.POST("/video/comment", middleware.AuthMiddleware(), controller.AddCommentVideoController)
 	v1.GET("/video/comments", controller.GetCommentVideoController)
+	v1.GET("/videos/hot", controller.GetHotVideoController)
 }
