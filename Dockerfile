@@ -1,16 +1,18 @@
-FROM golang:latest
+FROM golang:1.17-alpine
 
-MAINTAINER aikan_admin
-WORKDIR /awesomeProject0511
-WORKDIR $GOPATH/go
-COPY . $GOPATH/go
+MAINTAINER foo
+WORKDIR /AIKAN
+COPY . /AIKAN
 COPY go.mod ./
 COPY go.sum ./
-COPY * ./
-RUN go env -w GO111MODULE=auto
-RUN go env -w GOPROXY=https://goproxy.cn,direct
-RUN go build -mod=mod main.go routes.go
+
+RUN go env -w GOPROXY=https://goproxy.cn,direct \
+    && go mod tidy \
+    && go build -mod=mod main.go \
+    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+    && apk update --no-cache \
+    && apk add ffmpeg
 
 
-EXPOSE 8888
+EXPOSE 12333
 CMD ["./main"]
