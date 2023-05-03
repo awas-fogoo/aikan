@@ -162,9 +162,37 @@ func SendVerificationCode(c *gin.Context) {
 //}
 // 定义注册函数
 func Register(c *gin.Context) {
-	password := c.PostForm("password")
-	username := c.PostForm("username")
-	hashedPwd, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	//password := c.PostForm("password")
+	//username := c.PostForm("username")
+
+	registerData := model.UserData{}
+	if err := c.Bind(&registerData); err != nil {
+		c.JSON(400, dto.Error(-1, "Invalid request payload"))
+		return
+	}
+
+	// Validate username length
+	if len(registerData.Username) < 0 || len(registerData.Password) > 10 {
+		c.JSON(400, dto.Error(-1, "Username should be at least 0 and at most 10 characters long"))
+		return
+	}
+
+	// Validate password length
+	if len(registerData.Password) < 6 || len(registerData.Password) > 20 {
+		c.JSON(400, dto.Error(-1, "Password should be at least 6 and at most 20 characters long"))
+		return
+	}
+
+	// Check if the username already exists
+	db := common.InitDB()
+	var existingUser model.User
+	if err := db.Where("username = ?", registerData.Username).First(&existingUser).Error; err == nil {
+		// If a user with the same username already exists, return an error
+		c.JSON(400, dto.Error(-1, "Username already exists"))
+		return
+	}
+
+	hashedPwd, err := bcrypt.GenerateFromPassword([]byte(registerData.Password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Println(err)
 		c.JSON(500, dto.Error(-1, "服务器内部错误"))
@@ -176,17 +204,19 @@ func Register(c *gin.Context) {
 	}
 
 	user := model.User{
-		Username: username,
-		Nickname: util.RandomString(10),
-		Email:    "default@bup.pub",
-		Auth:     auth,
+		Username:      registerData.Username,
+		Nickname:      util.RandomString(10),
+		Email:         "default@bup.pub",
+		AboutMe:       "nothing~",
+		AvatarUrl:     "https://img.win3000.com/m00/0b/44/804caeabc046bffcfa5f755c960d7c8e.jpg",
+		BackgroundUrl: "https://bup.pub/archive/24fc7f4e-1333-44ba-b415-afe38793d19d.png",
+		Auth:          auth,
 	}
-	db := common.InitDB()
 	tx := db.Begin()
 	if err := tx.Create(&user).Error; err != nil {
 		tx.Rollback()
 		log.Println(err)
-		c.JSON(500, dto.Error(-1, "用户创建失败"))
+		c.JSON(400, dto.Error(-1, "用户已存在"))
 		return
 	}
 	if err := tx.Commit().Error; err != nil {
@@ -201,27 +231,48 @@ func Register(c *gin.Context) {
 		c.JSON(0, dto.Error(0, "系统异常"))
 
 	}
-	c.JSON(200, dto.Success(token))
+	// 自定义结构体
+	type RegisterInfo struct {
+		Token string      `json:"token"`
+		User  interface{} `json:"userinfo"`
+	}
+	userReg := map[string]interface{}{
+		"id":             user.ID,
+		"username":       user.Username,
+		"nickname":       user.Nickname,
+		"avatar_url":     user.AvatarUrl,
+		"background_url": user.BackgroundUrl,
+		"about_me":       user.AboutMe,
+	}
+
+	var infoReg = RegisterInfo{
+		Token: token,
+		User:  userReg,
+	}
+	c.JSON(0, dto.RetDTO{Message: "register success", Data: infoReg})
 	return
 }
 
 func Login(c *gin.Context) {
 	// ajax获取参数
-	//requestUser := model.User{}
-	//c.Bind(&requestUser)
-	//email := requestUser.Email
-	//password := requestUser.Password
+	loginData := model.UserData{}
+	if err := c.Bind(&loginData); err != nil {
+		c.JSON(400, dto.Error(-1, "Invalid request payload"))
+		return
+	}
 
-	username := c.PostForm("username")
-	password := c.PostForm("password")
+	//username := c.PostForm("username")
+	//password := c.PostForm("password")
+	username := loginData.Username
+	password := loginData.Password
 	log.Println("login:", username, password)
 	// 数据验证
 	if len(username) == 0 {
-		c.JSON(0, dto.RetDTO{Message: "请输入用户名"})
+		c.JSON(0, dto.Error(-1, "请输入用户名"))
 		return
 	}
-	if len(password) < 6 && len(password) == 0 {
-		c.JSON(0, dto.RetDTO{Message: "请输入密码,密码长度不能低于6位"})
+	if len(password) < 6 && len(password) == 0 && len(password) > 20 {
+		c.JSON(0, dto.Error(-1, "请输入密码,密码长度不能低于6位"))
 		return
 	}
 
@@ -230,15 +281,36 @@ func Login(c *gin.Context) {
 	user, err := verityPwd(db, username, password)
 	if err != nil {
 		log.Println(err)
-		c.JSON(0, dto.RetDTO{Message: "用户名或密码错误"})
+		c.JSON(0, dto.Error(-1, "用户名或密码错误"))
 	} else {
 		// 发送token
 		token, err := common.ReleaseToken(*user)
 		if err != nil {
-			c.JSON(500, dto.RetDTO{Message: "系统异常"})
+			c.JSON(500, dto.Error(-1, "系统异常"))
 			log.Printf("token generate error : %v", err)
 		}
-		c.JSON(0, dto.RetDTO{Message: "登入成功", Data: token})
+		// 自定义结构体
+		type LoginInfo struct {
+			Token string      `json:"token"`
+			User  interface{} `json:"userinfo"`
+		}
+		user := map[string]interface{}{
+			"id":             user.ID,
+			"username":       user.Username,
+			"nickname":       user.Nickname,
+			"avatar_url":     user.AvatarUrl,
+			"background_url": user.BackgroundUrl,
+			"about_me":       user.AboutMe,
+		}
+
+		// 将 token 和 user 信息封装到 LoginInfo 结构体中
+		var info = LoginInfo{
+			Token: token,
+			User:  user,
+		}
+
+		// 将 LoginInfo 结构体作为 Data 字段传递给 RetDTO 结构体
+		c.JSON(0, dto.RetDTO{Message: "登入成功", Data: info})
 	}
 }
 
@@ -296,4 +368,8 @@ func AddFollowUserController(c *gin.Context) {
 
 func UnFollowUserController(c *gin.Context) {
 	server.UnFollowUserServer(c)
+}
+
+func GetProfileController(c *gin.Context) {
+	server.GetProfileServer(c)
 }

@@ -12,7 +12,7 @@ type VideoDetailDTO struct {
 	CreatedAt   string  `json:"created_at"`
 	Title       string  `json:"title"`
 	Description string  `json:"description"`
-	Url         string  `json:"ulr"`
+	Url         string  `json:"url"`
 	CoverUrl    string  `json:"cover_url"`
 	Views       uint    `json:"views"`
 	Likes       uint    `json:"likes"`
@@ -63,11 +63,11 @@ func GetVideoDetailServer(c *gin.Context) {
 	//	return
 	//}
 	//
-	//// 更新视频浏览次数
-	//video.Views++
-	//if err := db.Save(&video).Error; err != nil {
-	//	c.JSON(500, dto.Error(0, "update video view failed"))
-	//	return
-	//}
+	// 更新视频浏览次数
+	video.Views++
+	if err := db.Save(&video).Error; err != nil {
+		c.JSON(500, dto.Error(0, "update video view failed"))
+		return
+	}
 	c.JSON(0, dto.Success(ToVideoDetailDTO(video)))
 }

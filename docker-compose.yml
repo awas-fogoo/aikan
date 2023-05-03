@@ -1,14 +1,14 @@
 version: '3'
 services:
-  civil:
+  golang:
     build: ./
     image: aikan/golang:0.1
     container_name: goback
     restart: always
-#    environment:
-#      MYSQL_DSN: "root:aikan_root_980002_admin@tcp/aikan?charset=utf8&parseTime=True&loc=Local"
+    environment:
+      MYSQL_DSN: "root:aikan_root_980002_admin_007@tcp/aikan?charset=utf8&parseTime=True&loc=Local"
     ports:
-      - "18888:8888"
+      - "18888:18888"
     links:
       - mysql
     depends_on:
@@ -19,7 +19,7 @@ services:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: aikan_root_980002_admin
+      MYSQL_ROOT_PASSWORD: aikan_root_980002_admin_007
       MYSQL_DATABASE: aikan
     volumes:
       - /var/lib/mysql:/var/lib/mysql

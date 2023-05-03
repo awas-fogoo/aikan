@@ -1,4 +1,4 @@
-FROM golang:1.17-alpine
+FROM golang:1.18-alpine
 
 MAINTAINER foo
 WORKDIR /AIKAN
@@ -14,5 +14,5 @@ RUN go env -w GOPROXY=https://goproxy.cn,direct \
     && apk add ffmpeg
 
 
-EXPOSE 12333
+EXPOSE 18888
 CMD ["./main"]

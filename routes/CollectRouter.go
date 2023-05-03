@@ -8,6 +8,8 @@ import (
 func CollectRouter(r *gin.Engine) *gin.Engine {
 	// 解决不同源
 	r.Use(middleware.CORSMiddleware())
+	//r.Use(cors.Default())
+
 	v1 := r.Group("/api/v1")
 	{
 		AutoCreateUserRoute(v1)

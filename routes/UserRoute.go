@@ -7,6 +7,8 @@ import (
 )
 
 func UserRoute(v1 *gin.RouterGroup) {
+	v1.GET("/profile", controller.GetProfileController)
+	v1.GET("/profile/:id")
 	v1.GET("/users/search", controller.SearchUserController)
 	v1.GET("/users/:user_id/following", middleware.AuthMiddleware(), controller.GetFollowingListController)
 	v1.GET("/users/:user_id/followers", middleware.AuthMiddleware(), controller.GetFollowersListController)
