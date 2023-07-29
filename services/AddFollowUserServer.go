@@ -1,4 +1,4 @@
-package server
+package services
 
 import (
 	"awesomeProject0511/common"
@@ -17,19 +17,21 @@ func AddFollowUserServer(c *gin.Context) {
 	user, _ := c.Get("user")
 	userDto := dto.ToUserDTO(user.(model.User))
 	followingID := util.StringToUint(c.Param("user_id"))
+	if userDto.ID == followingID {
+		c.JSON(0, dto.Error(-1, "cannot follow oneself"))
+		return
+	}
+
 	if err := FollowUser(db, userDto.ID, followingID); err != nil {
 		log.Println(err)
 		c.JSON(0, dto.Error(-1, "关注失败，请重试"))
+		return
 	}
 	c.JSON(0, dto.Success("关注成功"))
 }
 
 // FollowUser 添加关注
 func FollowUser(db *gorm.DB, userID, followingID uint) error {
-	if userID == followingID {
-		return errors.New("cannot follow oneself")
-	}
-
 	var user, following model.User
 
 	if err := db.Transaction(func(tx *gorm.DB) error {

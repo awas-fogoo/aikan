@@ -1,41 +1,45 @@
 package controller
 
 import (
-	"awesomeProject0511/server"
+	"awesomeProject0511/services"
 	"github.com/gin-gonic/gin"
 )
 
 func VideoController(c *gin.Context) {
-	server.UploadVideoServer(c)
+	services.UploadVideoServer(c)
 }
 func GetVideoListController(c *gin.Context) {
-	server.GetVideoListServer(c)
+	services.GetVideoListServer(c)
 }
 
 func GetVideoDetailController(c *gin.Context) {
-	server.GetVideoDetailServer(c)
+	services.GetVideoDetailServer(c)
 }
 
 func SearchVideoController(c *gin.Context) {
-	server.SearchVideoServer(c)
+	services.SearchVideoServer(c)
 }
 
 func AddCollectionVideoController(c *gin.Context) {
-	server.AddCollectionVideoServer(c)
+	services.AddCollectionVideoServer(c)
 }
 
 func AddLikeVideoController(c *gin.Context) {
-	server.AddLikeVideoServer(c)
+	services.AddLikeVideoServer(c)
 }
 
 func AddCommentVideoController(c *gin.Context) {
-	server.AddCommentVideoServer(c)
+	services.AddCommentVideoServer(c)
 }
 
 func GetCommentVideoController(c *gin.Context) {
-	server.GerCommentVideoServer(c)
+	services.GerCommentVideoServer(c)
 }
 
 func GetHotVideoController(c *gin.Context) {
-	server.GetHotVideoServer(c)
+	services.GetHotVideoServer(c)
+}
+
+func VideoAddressForwardController(c *gin.Context) {
+	services.VideoStreamServer(c)
 }

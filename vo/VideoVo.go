@@ -11,8 +11,9 @@ type VideoHomeVo struct {
 	CreatedAt   CustomTime `json:"created_at"`
 	Title       string     `json:"title"`
 	Description string     `json:"description"`
-	Url         string     `json:"ulr"`
+	Url         string     `json:"url"`
 	CoverUrl    string     `json:"cover_url"`
+	Views       uint       `json:"views"`
 }
 
 type CustomTime struct {
@@ -56,4 +57,22 @@ func (t CustomTime) MarshalJSON() ([]byte, error) {
 		return []byte("null"), nil
 	}
 	return []byte(fmt.Sprintf("\"%s\"", t.Format("2006-01-02 15:04:05"))), nil
+}
+
+type DanmukuResponseVo struct {
+	UserID   uint   `json:"user_id"`
+	Content  string `json:"txt"`
+	Start    uint64 `json:"start"`
+	Duration uint64 `json:"duration"`
+	Prior    bool   `json:"prior"`
+	Colour   bool   `json:"color"`
+	Mode     string `json:"mode"`
+	Style    struct {
+		Color           string `json:"color"`
+		FontSize        string `json:"fontSize"`
+		Border          string `json:"border"`
+		BorderRadius    string `json:"borderRadius"`
+		Padding         string `json:"padding"`
+		BackgroundColor string `json:"backgroundColor"`
+	} `json:"style"`
 }

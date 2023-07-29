@@ -4,7 +4,7 @@ import (
 	"awesomeProject0511/common"
 	"awesomeProject0511/dto"
 	"awesomeProject0511/model"
-	"awesomeProject0511/server"
+	"awesomeProject0511/services"
 	"awesomeProject0511/util"
 	"errors"
 	"fmt"
@@ -61,7 +61,7 @@ func SendVerificationCode(c *gin.Context) {
 	}
 
 	// 发送验证码到这个邮箱
-	server.SendVerificationCode(email, randomCode)
+	services.SendVerificationCode(email, randomCode)
 	c.JSON(0, dto.Error(0, "验证码发送成功"))
 }
 
@@ -351,25 +351,25 @@ func CheckPasswordHash(password string, hash string) bool {
 }
 
 func SearchUserController(c *gin.Context) {
-	server.SearchUserServer(c)
+	services.SearchUserServer(c)
 }
 
 func GetFollowingListController(c *gin.Context) {
-	server.GetFollowingListServer(c)
+	services.GetFollowingListServer(c)
 }
 
 func GetFollowersListController(c *gin.Context) {
-	server.GetFollowersListServer(c)
+	services.GetFollowersListServer(c)
 }
 
 func AddFollowUserController(c *gin.Context) {
-	server.AddFollowUserServer(c)
+	services.AddFollowUserServer(c)
 }
 
 func UnFollowUserController(c *gin.Context) {
-	server.UnFollowUserServer(c)
+	services.UnFollowUserServer(c)
 }
 
 func GetProfileController(c *gin.Context) {
-	server.GetProfileServer(c)
+	services.GetProfileServer(c)
 }

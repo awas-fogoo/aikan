@@ -1,4 +1,4 @@
-package server
+package services
 
 import (
 	"awesomeProject0511/vo"

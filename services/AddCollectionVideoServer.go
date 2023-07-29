@@ -1,4 +1,4 @@
-package server
+package services
 
 import (
 	"awesomeProject0511/common"
@@ -10,7 +10,7 @@ import (
 	"log"
 )
 
-func AddLikeVideoServer(c *gin.Context) {
+func AddCollectionVideoServer(c *gin.Context) {
 	db := common.InitDB()
 	defer db.Close()
 	user, _ := c.Get("user")
@@ -21,52 +21,52 @@ func AddLikeVideoServer(c *gin.Context) {
 		if err == gorm.ErrRecordNotFound {
 			c.JSON(0, dto.Error(-1, "video id does not exist"))
 			return
+		} else {
+			log.Println(err)
 		}
-		log.Println(err)
-		return
+	} else {
+		Collect(db, c, userDto.ID, videoID)
 	}
-	Like(db, c, userDto.ID, videoID)
 }
 
-func Like(db *gorm.DB, c *gin.Context, userID, videoID uint) {
-	db.LogMode(true)
-	var userLike model.UserLike
+func Collect(db *gorm.DB, c *gin.Context, userID, videoID uint) {
+	var userCollection model.UserCollection
 
 	// 查询记录，包括已经软删除的记录
-	err := db.Unscoped().Where("user_id = ? AND video_id = ?", userID, videoID).First(&userLike).Error
+	err := db.Unscoped().Where("user_id = ? AND video_id = ?", userID, videoID).First(&userCollection).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		log.Println(err)
 		return
 	}
 
 	// 如果存在软删除，则恢复到初始状态
-	if userLike.DeletedAt != nil {
+	if userCollection.DeletedAt != nil {
 		// 使用Unscoped方法更新deleted_at字段的值
-		if err := db.Unscoped().Model(&userLike).Update("deleted_at", gorm.Expr("NULL")).Error; err != nil {
+		if err := db.Unscoped().Model(&userCollection).Update("deleted_at", gorm.Expr("NULL")).Error; err != nil {
 			log.Println(err)
 			return
 		}
-		c.JSON(0, dto.Success("re like success"))
+		c.JSON(0, dto.Success("re collection success"))
 		return
 	} else if err == gorm.ErrRecordNotFound {
 		// 否则新建记录
-		userLike = model.UserLike{
+		userCollection = model.UserCollection{
 			UserID:  userID,
 			VideoID: videoID,
 		}
-		if err := db.Create(&userLike).Error; err != nil {
+		if err := db.Create(&userCollection).Error; err != nil {
 			log.Println(err)
 			return
 		}
-		c.JSON(0, dto.Success("create like success"))
+		c.JSON(0, dto.Success("create collection success"))
 		return
 	}
 
 	// 软删除记录
-	if err := db.Delete(&userLike).Error; err != nil {
+	if err := db.Delete(&userCollection).Error; err != nil {
 		log.Println(err)
 		return
 	}
-	c.JSON(0, dto.Success("cancel like success"))
+	c.JSON(0, dto.Success("cancel collection success"))
 	return
 }

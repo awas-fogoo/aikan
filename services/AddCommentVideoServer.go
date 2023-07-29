@@ -1,4 +1,4 @@
-package server
+package services
 
 import (
 	"awesomeProject0511/common"
@@ -13,11 +13,16 @@ func AddCommentVideoServer(c *gin.Context) {
 	defer db.Close()
 	user, _ := c.Get("user")
 	userDto := dto.ToUserDTO(user.(model.User))
-	content := c.PostForm("content")
+	var content struct {
+		Content  string
+		VideoId  string
+		ParentId string
+	}
+	c.Bind(&content)
 	userID := userDto.ID
-	videoID := util.StringToUint(c.PostForm("video_id"))
-	parentCommentID := util.StringToUint(c.PostForm("parent_id"))
-	if len(content) < 0 && videoID < 0 && parentCommentID < 0 {
+	videoID := util.StringToUint(content.VideoId)
+	parentCommentID := util.StringToUint(content.ParentId)
+	if len(content.Content) <= 0 || videoID <= 0 || parentCommentID < 0 {
 		c.JSON(0, dto.Error(-1, "parameter error"))
 		return
 	}
@@ -48,7 +53,7 @@ func AddCommentVideoServer(c *gin.Context) {
 
 	// 创建一条新评论
 	comment := model.Comment{
-		Content:  content,
+		Content:  content.Content,
 		UserID:   userID,
 		VideoID:  videoID,
 		ParentID: parentID,

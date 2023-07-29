@@ -52,7 +52,7 @@ type UserCollection struct {
 type Video struct {
 	gorm.Model
 	Title       string   `gorm:"not null"`
-	Description string   `gorm:"not null;type:varchar(1000);"`
+	Description string   `gorm:"not null;type:varchar(2000);"`
 	Url         string   `gorm:"not null"`
 	CoverUrl    string   `gorm:"not null"`
 	Views       uint     `gorm:"default:0"`
@@ -68,6 +68,25 @@ type Video struct {
 	UserID      uint     `gorm:"not null"`
 	User        User     `gorm:"foreignKey:UserID"`
 	Tag         []Tag
+	//Season      []Season
+}
+
+type Season struct {
+	gorm.Model
+	VideoID   uint      // 电视剧的ID
+	SeasonNum uint      // 季数
+	Episodes  []Episode // 季数的剧集信息
+}
+
+type Episode struct {
+	gorm.Model
+	SeasonID    uint   // 季数的ID
+	EpisodeNum  uint   // 剧集的集数
+	Title       string `gorm:"not null"`
+	Description string `gorm:"not null;type:varchar(1000);"`
+	Url         string `gorm:"not null"`
+	CoverUrl    string `gorm:"not null"`
+	Duration    float64
 }
 
 type Tag struct {
@@ -81,16 +100,26 @@ type VideoTag struct {
 	VideoID uint
 	TagID   uint
 }
-
-type Danmaku struct {
+type DanmukuStyle struct {
+	Color           string
+	FontSize        string
+	Border          string
+	BorderRadius    string
+	Padding         string
+	BackgroundColor string
+}
+type Danmuku struct {
 	gorm.Model
-	VideoID uint   `gorm:"not null;index"`
-	Content string `gorm:"not null"`
-	Color   string `gorm:"not null"`
-	Time    uint64 `gorm:"not null"`
-	Type    uint8  `gorm:"default:0"` //类型0滚动;1顶部;2底部
-	UserID  uint   `gorm:"not null"`
-	User    User   `gorm:"foreignKey:UserID"`
+	VideoID  uint   `gorm:"not null;index"`
+	Content  string `gorm:"not null"`
+	Start    uint64 `gorm:"not null"`
+	Duration uint64 `gorm:"not null"`
+	Prior    bool   `gorm:"default:false"`
+	Colour   bool   `gorm:"default:false"`
+	Mode     string
+	Style    DanmukuStyle `gorm:"embedded"`
+	UserID   uint         `gorm:"not null"`
+	User     User         `gorm:"foreignKey:UserID"`
 }
 
 type Category struct {
