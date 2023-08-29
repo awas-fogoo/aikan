@@ -1,6 +1,7 @@
 package main
 
 import (
+	"awesomeProject0511/common"
 	"awesomeProject0511/routes"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -10,7 +11,7 @@ import (
 )
 
 func init() {
-	logFile, err := os.OpenFile("./log.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	logFile, err := os.OpenFile("log.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
 		fmt.Println("open log file failed, err:", err)
 		return
@@ -43,4 +44,6 @@ func InitConfig() {
 	if err != nil {
 		panic(err)
 	}
+	common.InitDB()
+	common.InitCache()
 }

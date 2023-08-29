@@ -6,16 +6,18 @@ server:
 datasource:
   driverName: mysql
   host: 127.0.0.1
+#  host: 172.23.0.3
   port: 3306
   database: aikan
   username: root
   password: aikan_root_980002_admin
+#  password: aikan_root_980002_admin_007
   charset: utf8
   loc: Asia/Shanghai
 redis:
-  host: 23.94.201.38
+  host: 127.0.0.1
   port: 6379
-  password: redis_007
+  password: 2O0xKGdpJ
 
 # 邮件发送配置
 email:

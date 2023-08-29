@@ -5,26 +5,36 @@ import (
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
+	"log"
+	"sync" // 导入 sync 包，用于确保线程安全
 )
 
-var Ctx = context.Background()
+var (
+	RDB    *redis.Client
+	RDBMux sync.Mutex // 用于保证 RDB 的线程安全
+)
 
-func InitCache() *redis.Client {
+func InitCache() {
 	host := viper.GetString("redis.host")
 	port := viper.GetString("redis.port")
+	password := viper.GetString("redis.password")
+
 	client := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%s", host, port),
-		Password: viper.GetString("redis.password"),
-		DB:       0,   // use default DB
+		Password: password,
+		DB:       0,   // 使用默认数据库
 		PoolSize: 100, // 连接池大小
 	})
-	//ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	//defer cancel()
 
-	_, err := client.Ping(Ctx).Result()
-	if err != nil {
-		panic("faild to connect redis ,err :" + err.Error())
+	// 为这个操作使用特定的上下文
+	ctx := context.TODO()
+
+	if err := client.Ping(ctx).Err(); err != nil {
+		log.Printf("连接到 Redis 失败：%v", err)
 	} else {
-		return client
+		// 如果连接成功，则将新的客户端赋值给 RDB 变量
+		RDBMux.Lock()
+		RDB = client
+		RDBMux.Unlock()
 	}
 }

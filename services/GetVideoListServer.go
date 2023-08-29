@@ -42,11 +42,10 @@ func ToGetVideoListDTOs(vs []model.Video) []GetVideoListDTO {
 	return dtos
 }
 func GetVideoListServer(c *gin.Context) {
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	var videos []model.Video
 	db.Preload("User").Order("RAND()").Limit(10).Find(&videos)
 	// 还需要修改 todo
-	c.JSON(0, dto.Success(ToGetVideoListDTOs(videos)))
+	c.JSON(200, dto.Success(ToGetVideoListDTOs(videos)))
 
 }

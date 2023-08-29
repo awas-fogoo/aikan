@@ -63,5 +63,4 @@ func TestGetVideoDetailServer(t *testing.T) {
 	db.Preload("User").Where("id = ?", id).Find(&video)
 	fmt.Println(video)
 	fmt.Println(ToVideoDetailDTO(video))
-	//c.JSON(0, dto.Success(videoDetailVos))
 }

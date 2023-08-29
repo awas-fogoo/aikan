@@ -14,8 +14,7 @@ type CommentResult struct {
 
 func (s VideoService) GetComments(vid string) ([]CommentResult, error) {
 	// 连接数据库
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 
 	// 查询评论列表
 	// 一级评论

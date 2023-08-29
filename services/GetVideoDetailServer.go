@@ -50,8 +50,7 @@ func ToVideoDetailDTO(v model.Video) VideoDetailDTO {
 	}
 }
 func GetVideoDetailServer(c *gin.Context) {
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	id := c.Param("id")
 	var video model.Video
 	//var videoDetailVos []vo.VideoDetailVo
@@ -66,8 +65,8 @@ func GetVideoDetailServer(c *gin.Context) {
 	// 更新视频浏览次数
 	video.Views++
 	if err := db.Save(&video).Error; err != nil {
-		c.JSON(500, dto.Error(0, "update video view failed"))
+		c.JSON(200, dto.Error(5000, "update video view failed"))
 		return
 	}
-	c.JSON(0, dto.Success(ToVideoDetailDTO(video)))
+	c.JSON(200, dto.Success(ToVideoDetailDTO(video)))
 }

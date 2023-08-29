@@ -12,22 +12,21 @@ import (
 )
 
 func AddFollowUserServer(c *gin.Context) {
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	user, _ := c.Get("user")
 	userDto := dto.ToUserDTO(user.(model.User))
 	followingID := util.StringToUint(c.Param("user_id"))
 	if userDto.ID == followingID {
-		c.JSON(0, dto.Error(-1, "cannot follow oneself"))
+		c.JSON(200, dto.Error(4000, "cannot follow oneself"))
 		return
 	}
 
 	if err := FollowUser(db, userDto.ID, followingID); err != nil {
 		log.Println(err)
-		c.JSON(0, dto.Error(-1, "关注失败，请重试"))
+		c.JSON(200, dto.Error(5000, "关注失败，请重试"))
 		return
 	}
-	c.JSON(0, dto.Success("关注成功"))
+	c.JSON(200, dto.Success("关注成功"))
 }
 
 // FollowUser 添加关注

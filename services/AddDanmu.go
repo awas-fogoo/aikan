@@ -9,8 +9,7 @@ import (
 
 func (VideoService) AddDanmu(vid, uid uint, start, duration uint64, colour, prior bool, content, mode string, style model.DanmukuStyle) error {
 	// 连接数据库
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	fmt.Println(style)
 	danmu := model.Danmuku{
 		VideoID:  vid,
@@ -51,8 +50,7 @@ type DanmukuRaw struct {
 
 func (VideoService) GetDanmu(vid string) ([]vo.DanmukuResponseVo, error) {
 	// 连接数据库
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 
 	// 执行原始查询
 	rows, err := db.Raw("SELECT id, user_id, start, duration, prior, colour, content, mode, color, font_size, border, border_radius, padding, background_color FROM danmukus WHERE video_id = ?", vid).Rows()

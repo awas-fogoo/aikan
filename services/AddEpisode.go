@@ -51,8 +51,7 @@ func AddEpisode(c *gin.Context) {
 
 	// 查询对应的电视剧
 	// 连接数据库
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	var video model.Video
 	if err := db.First(&video, videoID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Video not found"})

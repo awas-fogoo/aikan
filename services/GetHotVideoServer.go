@@ -57,12 +57,11 @@ func calculateVideoWeight(likes, comments, collections, danmaku, views uint, cre
 	return weight
 }
 func GetHotVideoServer(c *gin.Context) {
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	videos, err := getPopularVideos(db, 4)
 	if err != nil {
 		log.Println(err)
 	}
 	// videos即为获取的热门视频列表
-	c.JSON(0, dto.Success(videos))
+	c.JSON(200, dto.Success(videos))
 }

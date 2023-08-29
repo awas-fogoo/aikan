@@ -10,7 +10,9 @@ import (
 	"net/url"
 )
 
-func InitDB() *gorm.DB {
+var DB *gorm.DB
+
+func InitDB() {
 	driverName := viper.GetString("datasource.driverName")
 	host := viper.GetString("datasource.host")
 	port := viper.GetString("datasource.port")
@@ -42,14 +44,13 @@ func InitDB() *gorm.DB {
 		}
 	}()
 
-	//tx.AutoMigrate(&model.User{}, &model.Video{}, &model.Category{}, &model.Comment{}, &model.CommentRelation{})
 	if err := tx.AutoMigrate(&model.User{}, &model.Video{}, &model.Category{},
 		&model.Comment{}, &model.CommentRelation{}, &model.Role{}, &model.Permission{},
 		&model.RolePermission{}, &model.Danmuku{},
 		&model.UserLike{}, &model.UserCollection{}, &model.Tag{}, &model.VideoTag{},
 		&model.Auth{}, &model.SearchRecord{},
 	).Error; err != nil {
-		log.Fatalf("无法迁移表格：" + err.Error())
+		log.Fatalf("Unable to migrate table:" + err.Error())
 	}
 	tx.Model(&model.User{}).AddUniqueIndex("idx_user_username", "username")
 	tx.Model(&model.Video{}).AddIndex("idx_video_title", "title")
@@ -59,5 +60,8 @@ func InitDB() *gorm.DB {
 	tx.Model(&model.Comment{}).AddIndex("idx_comment_user_video", "user_id", "video_id")
 	tx.Model(&model.CommentRelation{}).AddIndex("idx_comment_ancestor_descendant", "ancestor_id", "descendant_id")
 
-	return db
+	db.DB().SetMaxIdleConns(10)  // 设置连接池中的最大闲置连接数
+	db.DB().SetMaxOpenConns(100) // 设置连接池中的最大打开连接数
+
+	DB = db
 }

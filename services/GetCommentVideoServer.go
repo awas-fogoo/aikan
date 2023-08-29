@@ -9,8 +9,7 @@ import (
 )
 
 func GerCommentVideoServer(c *gin.Context) {
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	videoID := c.Query("vid")
 	// 一级评论
 	var comments []model.Comment
@@ -31,6 +30,6 @@ func GerCommentVideoServer(c *gin.Context) {
 			}
 		}
 	}
-	c.JSON(0, dto.Success("get comment content success"))
+	c.JSON(200, dto.Success("get comment content success"))
 	return
 }

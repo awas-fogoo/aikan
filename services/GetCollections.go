@@ -15,8 +15,7 @@ type VideoBrief struct {
 
 func (s VideoService) GetCollections(userID uint) ([]VideoBrief, error) {
 	// 连接数据库
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 
 	// 查询收藏列表
 	var videos []model.Video
@@ -37,8 +36,7 @@ func (s VideoService) GetCollections(userID uint) ([]VideoBrief, error) {
 
 func (s VideoService) GetLikes(userID uint) ([]VideoBrief, error) {
 	// 连接数据库
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 
 	// 查询收藏列表
 	var videos []model.Video

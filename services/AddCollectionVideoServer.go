@@ -11,15 +11,14 @@ import (
 )
 
 func AddCollectionVideoServer(c *gin.Context) {
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	user, _ := c.Get("user")
 	userDto := dto.ToUserDTO(user.(model.User))
 	videoID := util.StringToUint(c.Param("id"))
 	var video model.Video
 	if err := db.Where("id = ?", videoID).First(&video).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			c.JSON(0, dto.Error(-1, "video id does not exist"))
+			c.JSON(200, dto.Error(4000, "video id does not exist"))
 			return
 		} else {
 			log.Println(err)
@@ -46,7 +45,7 @@ func Collect(db *gorm.DB, c *gin.Context, userID, videoID uint) {
 			log.Println(err)
 			return
 		}
-		c.JSON(0, dto.Success("re collection success"))
+		c.JSON(200, dto.Success("re collection success"))
 		return
 	} else if err == gorm.ErrRecordNotFound {
 		// 否则新建记录
@@ -58,7 +57,7 @@ func Collect(db *gorm.DB, c *gin.Context, userID, videoID uint) {
 			log.Println(err)
 			return
 		}
-		c.JSON(0, dto.Success("create collection success"))
+		c.JSON(200, dto.Success("create collection success"))
 		return
 	}
 
@@ -67,6 +66,6 @@ func Collect(db *gorm.DB, c *gin.Context, userID, videoID uint) {
 		log.Println(err)
 		return
 	}
-	c.JSON(0, dto.Success("cancel collection success"))
+	c.JSON(200, dto.Success("cancel collection success"))
 	return
 }

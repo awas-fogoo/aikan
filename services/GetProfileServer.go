@@ -10,8 +10,7 @@ import (
 )
 
 func GetProfileServer(c *gin.Context) {
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	tokenString := c.GetHeader("Authorization")
 	viewer := uint(0) // 默认为未登录用户
 	if tokenString != "" {

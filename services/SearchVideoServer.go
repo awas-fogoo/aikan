@@ -13,12 +13,11 @@ import (
 )
 
 func SearchVideoServer(c *gin.Context) {
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	q := c.Query("q")
 
 	if len(q) >= 100 || len(q) < 0 {
-		c.JSON(0, dto.Error(-1, "搜索长度不是正确的"))
+		c.JSON(200, dto.Error(4000, "搜索长度不是正确的"))
 		return
 	}
 
@@ -51,7 +50,7 @@ func SearchVideoServer(c *gin.Context) {
 
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer ") {
-		c.JSON(0, dto.Success(videos))
+		c.JSON(200, dto.Success(videos))
 		return
 	}
 
@@ -74,7 +73,7 @@ func SearchVideoServer(c *gin.Context) {
 		Count   int
 	}
 	db.Table("search_records").Select("keyword, count(keyword) as count").Group("keyword").Order("count desc").Limit(10).Scan(&hotKeywords)
-	c.JSON(0, dto.Success(videos))
+	c.JSON(200, dto.Success(videos))
 }
 
 func storeRecords(db *gorm.DB, records chan model.SearchRecord) {

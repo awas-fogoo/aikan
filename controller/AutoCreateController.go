@@ -20,8 +20,7 @@ func AutoCreateUser(c *gin.Context) {
 }
 
 func addUser(c *gin.Context) {
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	var users []*model.User
 	err := util.WithTransaction(db, func(tx *gorm.DB) error {
 		// 增删改操作
@@ -52,8 +51,7 @@ func addUser(c *gin.Context) {
 
 // 创建电影分类及其子分类
 func addCategory(c *gin.Context) {
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	err := util.WithTransaction(db, func(tx *gorm.DB) error {
 		// init category
 		// 建立分类
@@ -104,8 +102,7 @@ func addCategory(c *gin.Context) {
 }
 
 func addTag(c *gin.Context) {
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	err := util.WithTransaction(db, func(tx *gorm.DB) error {
 		// 创建新的标签
 		tags := []model.Tag{

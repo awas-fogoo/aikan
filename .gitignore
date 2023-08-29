@@ -7,7 +7,7 @@
 /dataSources/
 /dataSources.local.xml
 /config/application.yml
-/tmp
+/tmp/*
 .DS_Store
 log.log
 .git

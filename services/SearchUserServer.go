@@ -10,8 +10,7 @@ import (
 )
 
 func SearchUserServer(c *gin.Context) {
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	q := c.Query("q")
 	var users []model.User
 	var userVos []vo.UserVo
@@ -20,5 +19,5 @@ func SearchUserServer(c *gin.Context) {
 		log.Panicln("search user failed:", err)
 		return
 	}
-	c.JSON(0, dto.Success(userVos))
+	c.JSON(200, dto.Success(userVos))
 }

@@ -6,15 +6,13 @@ import (
 	"awesomeProject0511/services"
 	"awesomeProject0511/util"
 	"awesomeProject0511/vo"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
-	"net/http"
 )
 
 type VideosController struct{}
 
-func (c VideosController) GetCollections(ctx *gin.Context) {
+func (VideosController) GetCollections(ctx *gin.Context) {
 
 	// 从 JWT 中获取用户信息
 	currentUserID := util.StringToUint(ctx.Param("id"))
@@ -24,15 +22,15 @@ func (c VideosController) GetCollections(ctx *gin.Context) {
 	videos, err := videoService.GetCollections(currentUserID)
 	if err != nil {
 		log.Println("get collections filed")
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, dto.Error(500, "get collections filed"))
+		ctx.AbortWithStatusJSON(200, dto.Error(5000, "Get collections filed"))
 		return
 	}
 
 	// 返回收藏列表
-	ctx.JSON(http.StatusOK, dto.Success(videos))
+	ctx.JSON(200, dto.Success(videos))
 }
 
-func (c VideosController) GetLikes(ctx *gin.Context) {
+func (VideosController) GetLikes(ctx *gin.Context) {
 
 	// 从 JWT 中获取用户信息
 	currentUserID := util.StringToUint(ctx.Param("id"))
@@ -42,35 +40,33 @@ func (c VideosController) GetLikes(ctx *gin.Context) {
 	users, err := videoService.GetLikes(currentUserID)
 	if err != nil {
 		log.Println("get likes failed")
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, dto.Error(500, "get likes failed"))
+		ctx.AbortWithStatusJSON(200, dto.Error(5000, "Get likes failed"))
 		return
 	}
 
 	// 返回点赞列表
-	ctx.JSON(http.StatusOK, dto.Success(users))
+	ctx.JSON(200, dto.Success(users))
 }
 
-func (c VideosController) GetComments(ctx *gin.Context) {
+func (VideosController) GetComments(ctx *gin.Context) {
 	videoID := ctx.Param("id")
-	fmt.Println(videoID)
 	videoService := services.VideoService{}
-	res, err := videoService.GetComments(videoID)
+	result, err := videoService.GetComments(videoID)
 	if err != nil {
-		log.Println("get comments failed")
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, dto.Error(500, "get comments failed"))
+		ctx.AbortWithStatusJSON(200, dto.Error(5000, "Get comments failed"))
 		return
 	}
 
 	// 返回点赞列表
-	ctx.JSON(http.StatusOK, dto.Success(res))
+	ctx.JSON(200, dto.Success(result))
 
 }
 
-func (c VideosController) AddDanmu(ctx *gin.Context) {
+func (VideosController) AddDanmu(ctx *gin.Context) {
 	danmukuResponseVo := vo.DanmukuResponseVo{}
 	err := ctx.BindJSON(&danmukuResponseVo)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, dto.Error(0, "invalid request body"))
+		ctx.JSON(200, dto.Error(4000, "Invalid request body"))
 		return
 	}
 
@@ -87,7 +83,7 @@ func (c VideosController) AddDanmu(ctx *gin.Context) {
 
 	// 检查多个变量是否为空
 	if vid == 0 || uid == 0 || start == 0 || duration == 0 || len(content) == 0 {
-		ctx.JSON(http.StatusBadRequest, dto.Error(0, "one or more fields are empty"))
+		ctx.JSON(200, dto.Error(4000, "One or more fields are empty"))
 		return
 	}
 
@@ -111,27 +107,105 @@ func (c VideosController) AddDanmu(ctx *gin.Context) {
 		},
 	}
 
-	fmt.Println(danmu)
 	// 调用服务方法
-	err = services.VideoService{}.AddDanmu(vid, uid, start, duration, colour, prior, content, mode, danmu.Style)
+	videoService := services.VideoService{}
+	err = videoService.AddDanmu(vid, uid, start, duration, colour, prior, content, mode, danmu.Style)
 	if err != nil {
 		log.Println(err.Error())
-		ctx.JSON(http.StatusInternalServerError, dto.Error(0, "failed to add danmu"))
+		ctx.JSON(200, dto.Error(5000, "Failed to add danmu"))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, dto.Success("Danmu added successfully"))
+	ctx.JSON(200, dto.Success(nil))
 }
 
-func (c VideosController) GetDanmu(ctx *gin.Context) {
+func (VideosController) GetDanmus(ctx *gin.Context) {
 	vid := ctx.Param("vid")
 	// 调用服务方法
 	danmu, err := services.VideoService{}.GetDanmu(vid)
 	if err != nil {
 		log.Println(err.Error())
-		dto.Error(0, "get danmu false ")
+		dto.Error(5000, "Get danmu failed ")
 		return
 	}
 
 	ctx.JSON(200, dto.Success(danmu))
+}
+
+func (VideosController) UploadVideo(c *gin.Context) {
+	//title := c.PostForm("title")
+	//desc := c.PostForm("description")
+	//url := c.PostForm("url")
+	//coverUrl := c.PostForm("cover_url")
+	//tags := c.PostForm("tags")
+	//categoryId := util.StringToUint(c.PostForm("category_id"))
+	uploadVideoVo := vo.SearchVideoVo{}
+	if err := c.Bind(&uploadVideoVo); err != nil {
+		c.JSON(200, dto.Error(4000, "Invalid request payload"))
+		return
+	}
+	getUser, _ := c.Get("user")
+	userDto := dto.ToUserDTO(getUser.(model.User))
+	// 调用服务层上传视频函数
+	videoService := services.VideoService{}
+	videoID, err := videoService.UploadVideoServer(uploadVideoVo.Title, uploadVideoVo.Description, uploadVideoVo.Url, uploadVideoVo.CoverUrl, uploadVideoVo.Tags, uploadVideoVo.CategoryID, userDto.ID)
+	if err != nil {
+		log.Println(err)
+		c.JSON(200, dto.Error(err.Code, err.Message))
+		return
+	}
+	c.JSON(200, dto.Success(map[string]interface{}{
+		"vid": videoID, // 请将 videoID 替换为实际的视频 ID
+	}))
+}
+
+func (VideosController) AddLikeVideo(c *gin.Context) {
+	user, _ := c.Get("user")
+	userDto := dto.ToUserDTO(user.(model.User))
+	videoID := util.StringToUint(c.Param("id"))
+	userID := userDto.ID
+
+	if videoID == 0 {
+		c.JSON(200, dto.Error(4000, "Wrong Video ID"))
+	}
+	videoService := services.VideoService{}
+	response := videoService.AddLikeVideo(videoID, userID)
+	c.JSON(200, response)
+}
+
+/*
+通常来说，控制层应该负责处理 HTTP 请求、验证输入、构建响应以及将请求传递给服务层来执行具体的业务逻辑。
+服务层负责实际的业务逻辑处理，比如视频上传、标签处理等。
+*/
+
+func (VideosController) GetVideoList(c *gin.Context) {
+	services.GetVideoListServer(c)
+}
+
+func (VideosController) GetVideoDetail(c *gin.Context) {
+	services.GetVideoDetailServer(c)
+}
+
+func (VideosController) SearchVideo(c *gin.Context) {
+	services.SearchVideoServer(c)
+}
+
+func (VideosController) AddCollectionVideo(c *gin.Context) {
+	services.AddCollectionVideoServer(c)
+}
+
+func (VideosController) AddCommentVideo(c *gin.Context) {
+	services.AddCommentVideoServer(c)
+}
+
+func (VideosController) GetCommentVideo(c *gin.Context) {
+	services.GerCommentVideoServer(c)
+}
+
+func (VideosController) GetHotVideo(c *gin.Context) {
+	services.GetHotVideoServer(c)
+}
+
+func (VideosController) VideoAddressForward(c *gin.Context) {
+	services.VideoStreamServer(c)
 }

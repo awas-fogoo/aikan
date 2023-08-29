@@ -10,13 +10,12 @@ import (
 )
 
 func GetFollowersListServer(c *gin.Context) {
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	followersID := util.StringToUint(c.Param("user_id"))
 	followersList, err := GetFollowerList(db, followersID)
 	if err != nil {
 		log.Println(err)
-		c.JSON(0, dto.Error(-1, "获取粉丝列表失败，请重试"))
+		c.JSON(200, dto.Error(5000, "获取粉丝列表失败，请重试"))
 	}
 	var usersJSON []map[string]interface{}
 	for _, following := range followersList {

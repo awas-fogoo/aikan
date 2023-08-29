@@ -6,8 +6,6 @@ import (
 	"awesomeProject0511/model"
 	"awesomeProject0511/util"
 	"bytes"
-	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"log"
 	"os/exec"
@@ -17,40 +15,55 @@ import (
 	"time"
 )
 
-func UploadVideoServer(c *gin.Context) {
-	db := common.InitDB()
-	defer db.Close()
-	getUser, _ := c.Get("user")
-	userDto := dto.ToUserDTO(getUser.(model.User))
+func (VideoService) UploadVideoServer(
+	title, desc, url, coverUrl, tags string,
+	categoryId, userId uint,
+) (uint, *dto.RetDTO) {
+	db := common.DB
 	var user model.User
-	db.Where("id =?", userDto.ID).First(&user)
-	title := c.PostForm("title")
-	desc := c.PostForm("description")
-	url := c.PostForm("url")
-	coverUrl := c.PostForm("cover_url")
-	tags := c.PostForm("tags")
-	categoryId := util.StringToUint(c.PostForm("category_id"))
-	fmt.Println(categoryId)
 
-	if len(title) == 0 && len(desc) == 0 && categoryId <= 0 && util.IsValidURL(url) && util.IsValidURL(url) {
-		c.JSON(0, dto.Error(-1, "cannot be empty or url acquisition failed"))
-		return
+	if err := db.Where("id =?", userId).First(&user).Error; err != nil {
+		return 0, dto.Error(4000, "用户不存在")
 	}
-	tagNmaes := handleTags(tags)
+
+	// 验证输入数据
+	if len(title) == 0 {
+		return 0, dto.Error(4000, "标题不能为空")
+	}
+
+	if len(desc) == 0 {
+		return 0, dto.Error(4000, "描述不能为空")
+	}
+
+	if len(tags) == 0 {
+		return 0, dto.Error(4000, "标签不能为空")
+	}
+
+	if categoryId <= 0 {
+		return 0, dto.Error(4000, "无效的分类")
+	}
+
+	if !util.IsValidURL(url) {
+		return 0, dto.Error(4000, "无效的视频 URL")
+	}
+
+	if !util.IsValidURL(coverUrl) {
+		return 0, dto.Error(4000, "无效的封面 URL")
+	}
+
+	tagNames := handleTags(tags)
 	// 获取所有分类
 	var categories []model.Category
 	err := db.Find(&categories).Error
 	if err != nil {
-		log.Fatalln(err)
-		return
+		return 0, dto.Error(5000, "获取分类列表失败")
 	}
+
 	// 获取用户选择的分类
 	var category model.Category
 	err = db.Where("id = ?", categoryId).First(&category).Error
 	if err != nil {
-		log.Println(err)
-		c.JSON(0, dto.Error(0, "category does not exist"))
-		return
+		return 0, dto.Error(5000, "获取用户选择的分类失败")
 	}
 
 	// 创建一个 Video 类型的变量
@@ -58,31 +71,37 @@ func UploadVideoServer(c *gin.Context) {
 		Title:       title,
 		Description: desc,
 		CategoryID:  category.ID,
-		UserID:      userDto.ID,
+		UserID:      userId,
 	}
+
 	// 创建新的视频标签关联
-	if err := createVideoWithTags(db, &video, tagNmaes); err != nil {
-		log.Fatal(err)
+	if err := createVideoWithTags(db, &video, tagNames); err != nil {
+		return 0, dto.Error(5000, "创建视频标签关联失败")
 	}
+
 	// 将文件上传到云端或者保存到本地，获取文件的 URL
 	video.Url = url
 	video.CoverUrl = coverUrl
 
-	// 获取视频时长
-	video.Duration = getVideoDuration(url)
+	if strings.HasSuffix(url, ".mp4") {
+		// 获取视频时长
+		video.Duration = getVideoDuration(url)
 
-	// 获取分辨率大小
-	video.Quality = getVideoResolution(url)
+		// 获取分辨率大小
+		video.Quality = getVideoResolution(url)
+	} else {
+		video.Duration = 0
+		video.Quality = "Unknown"
+	}
+
 	// 将视频关联到用户
 	user.Videos = append(user.Videos, video)
 
 	// 保存更改
-	err = db.Save(&user).Error
-	if err != nil {
-		log.Println(err)
-		return
+	if err := db.Save(&user).Error; err != nil {
+		return 0, dto.Error(5000, "保存用户视频失败")
 	}
-	c.JSON(0, dto.Success("上传成功"))
+	return video.ID, nil
 }
 
 // CreateVideoWithTags 创建视频和标签，并建立多对多关系

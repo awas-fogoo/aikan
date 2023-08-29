@@ -9,8 +9,7 @@ import (
 )
 
 func AddCommentVideoServer(c *gin.Context) {
-	db := common.InitDB()
-	defer db.Close()
+	db := common.DB
 	user, _ := c.Get("user")
 	userDto := dto.ToUserDTO(user.(model.User))
 	var content struct {
@@ -23,7 +22,7 @@ func AddCommentVideoServer(c *gin.Context) {
 	videoID := util.StringToUint(content.VideoId)
 	parentCommentID := util.StringToUint(content.ParentId)
 	if len(content.Content) <= 0 || videoID <= 0 || parentCommentID < 0 {
-		c.JSON(0, dto.Error(-1, "parameter error"))
+		c.JSON(200, dto.Error(4000, "parameter error"))
 		return
 	}
 	var parentID *uint
@@ -39,7 +38,7 @@ func AddCommentVideoServer(c *gin.Context) {
 		var commentRelation model.CommentRelation
 		if err := db.Where("id = ?", parentCommentID).First(&parentComment).Error; err != nil {
 			// 父评论不存在，这里可以根据需求决定如何处理
-			c.JSON(0, dto.Error(-1, "parent id does not exist"))
+			c.JSON(200, dto.Error(4000, "parent id does not exist"))
 		} else {
 			parentID = &parentCommentID
 			if parentComment.ParentID == nil {
@@ -69,6 +68,6 @@ func AddCommentVideoServer(c *gin.Context) {
 		}
 		db.Create(&commentRelation)
 	}
-	c.JSON(0, dto.Success("comment success"))
+	c.JSON(200, dto.Success("comment success"))
 	return
 }
