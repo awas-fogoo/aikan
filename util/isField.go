@@ -1,8 +1,8 @@
 package util
 
 import (
-	"awesomeProject0511/model"
 	"github.com/jinzhu/gorm"
+	"one/model"
 )
 
 func IsFieldExist(db *gorm.DB, field string, value string) bool {

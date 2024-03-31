@@ -1,11 +1,11 @@
 package services
 
 import (
-	"awesomeProject0511/common"
-	"awesomeProject0511/dto"
-	"awesomeProject0511/util"
 	"github.com/gin-gonic/gin"
 	"log"
+	"one/common"
+	"one/dto"
+	"one/util"
 )
 
 func GetFollowingListServer(c *gin.Context) {

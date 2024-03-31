@@ -1,8 +1,8 @@
 package common
 
 import (
-	"awesomeProject0511/model"
 	"github.com/golang-jwt/jwt"
+	"one/model"
 	"time"
 )
 

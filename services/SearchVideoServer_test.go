@@ -1,9 +1,9 @@
 package services
 
 import (
-	"awesomeProject0511/vo"
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"one/vo"
 	"testing"
 )
 

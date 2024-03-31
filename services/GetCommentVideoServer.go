@@ -1,11 +1,11 @@
 package services
 
 import (
-	"awesomeProject0511/common"
-	"awesomeProject0511/dto"
-	"awesomeProject0511/model"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"one/common"
+	"one/dto"
+	"one/model"
 )
 
 func GerCommentVideoServer(c *gin.Context) {

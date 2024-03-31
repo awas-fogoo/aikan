@@ -1,11 +1,11 @@
 package middleware
 
 import (
-	"awesomeProject0511/common"
-	"awesomeProject0511/dto"
-	"awesomeProject0511/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"one/common"
+	"one/dto"
+	"one/model"
 	"strings"
 )
 

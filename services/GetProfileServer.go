@@ -1,12 +1,12 @@
 package services
 
 import (
-	"awesomeProject0511/common"
-	"awesomeProject0511/dto"
-	"awesomeProject0511/model"
-	"awesomeProject0511/util"
 	"github.com/gin-gonic/gin"
 	"log"
+	"one/common"
+	"one/dto"
+	"one/model"
+	"one/util"
 )
 
 func GetProfileServer(c *gin.Context) {
@@ -26,7 +26,7 @@ func GetProfileServer(c *gin.Context) {
 
 	// 访问者没有登入，并且没有输入uid
 	if viewee <= 0 && viewer == 0 {
-		c.JSON(400, dto.Error(-1, "Uid Get failed"))
+		c.JSON(200, dto.Error(4000, "Uid Get failed"))
 		return
 	}
 	// 访问者登入了，但是没有输入要查看的uid，则是查看自己
@@ -60,8 +60,8 @@ func GetProfileServer(c *gin.Context) {
 	}
 
 	// 按照最新上传的时间排序
-	videos := []model.Video{}
-	if err = db.Where("user_id = ?", viewee).Order("views DESC").Limit(6).Find(&videos).Error; err != nil {
+	var videos []model.Video
+	if err = db.Where("user_id = ?", viewee).Order("views DESC").Limit(12).Find(&videos).Error; err != nil {
 		log.Println(err)
 		return
 	}
@@ -88,10 +88,6 @@ func GetProfileServer(c *gin.Context) {
 		"backgroundUrl":  user.BackgroundUrl,
 	}
 
-	c.JSON(200, dto.RetDTO{
-		Code:    0,
-		Message: "success",
-		Data:    data,
-	})
+	c.JSON(200, dto.Success(data))
 
 }

@@ -1,13 +1,13 @@
 package services
 
 import (
-	"awesomeProject0511/common"
-	"awesomeProject0511/dto"
-	"awesomeProject0511/model"
-	"awesomeProject0511/util"
 	"bytes"
 	"github.com/jinzhu/gorm"
 	"log"
+	"one/common"
+	"one/dto"
+	"one/model"
+	"one/util"
 	"os/exec"
 	"regexp"
 	"strconv"

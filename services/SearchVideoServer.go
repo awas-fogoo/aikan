@@ -1,13 +1,13 @@
 package services
 
 import (
-	"awesomeProject0511/common"
-	"awesomeProject0511/dto"
-	"awesomeProject0511/model"
-	"awesomeProject0511/util"
-	"awesomeProject0511/vo"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"one/common"
+	"one/dto"
+	"one/model"
+	"one/util"
+	"one/vo"
 	"strings"
 	"time"
 )

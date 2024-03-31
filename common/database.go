@@ -1,13 +1,13 @@
 package common
 
 import (
-	"awesomeProject0511/model"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/spf13/viper"
 	"log"
 	"net/url"
+	"one/model"
 )
 
 var DB *gorm.DB

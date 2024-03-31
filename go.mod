@@ -1,4 +1,4 @@
-module awesomeProject0511
+module one
 
 go 1.17
 

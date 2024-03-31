@@ -1,10 +1,10 @@
 package services
 
 import (
-	"awesomeProject0511/common"
-	"awesomeProject0511/model"
-	"awesomeProject0511/vo"
 	"fmt"
+	"one/common"
+	"one/model"
+	"one/vo"
 )
 
 func (VideoService) AddDanmu(vid, uid uint, start, duration uint64, colour, prior bool, content, mode string, style model.DanmukuStyle) error {

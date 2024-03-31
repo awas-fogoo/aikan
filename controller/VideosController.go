@@ -1,13 +1,13 @@
 package controller
 
 import (
-	"awesomeProject0511/dto"
-	"awesomeProject0511/model"
-	"awesomeProject0511/services"
-	"awesomeProject0511/util"
-	"awesomeProject0511/vo"
 	"github.com/gin-gonic/gin"
 	"log"
+	"one/dto"
+	"one/model"
+	"one/services"
+	"one/util"
+	"one/vo"
 )
 
 type VideosController struct{}

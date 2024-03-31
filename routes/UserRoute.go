@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"awesomeProject0511/controller"
-	"awesomeProject0511/middleware"
 	"github.com/gin-gonic/gin"
+	"one/controller"
+	"one/middleware"
 )
 
 func UserRoute(v1 *gin.RouterGroup) {

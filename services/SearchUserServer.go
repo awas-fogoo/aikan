@@ -1,12 +1,12 @@
 package services
 
 import (
-	"awesomeProject0511/common"
-	"awesomeProject0511/dto"
-	"awesomeProject0511/model"
-	"awesomeProject0511/vo"
 	"github.com/gin-gonic/gin"
 	"log"
+	"one/common"
+	"one/dto"
+	"one/model"
+	"one/vo"
 )
 
 func SearchUserServer(c *gin.Context) {

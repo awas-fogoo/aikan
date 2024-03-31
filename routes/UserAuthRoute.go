@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"awesomeProject0511/controller"
 	"github.com/gin-gonic/gin"
+	"one/controller"
 )
 
 func UserAuthenticationRoute(v1 *gin.RouterGroup) {

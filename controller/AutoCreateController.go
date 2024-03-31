@@ -1,14 +1,14 @@
 package controller
 
 import (
-	"awesomeProject0511/common"
-	"awesomeProject0511/dto"
-	"awesomeProject0511/model"
-	"awesomeProject0511/util"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"log"
+	"one/common"
+	"one/dto"
+	"one/model"
+	"one/util"
 )
 
 func AutoCreateUser(c *gin.Context) {

@@ -16,7 +16,7 @@ func TestUploadVideo(t *testing.T) {
 	userId := uint(123)
 
 	// 调用服务层函数
-	videoURL, retDTO := UploadVideo(title, desc, url, coverUrl, tags, categoryId, userId)
+	videoURL, retDTO := VideoService{}.UploadVideoServer(title, desc, url, coverUrl, tags, categoryId, userId)
 	// 测试无效的 URL
 	//invalidURL := "invalid_url"
 	// 测试标题为空

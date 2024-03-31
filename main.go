@@ -1,12 +1,12 @@
 package main
 
 import (
-	"awesomeProject0511/common"
-	"awesomeProject0511/routes"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"log"
+	"one/common"
+	"one/routes"
 	"os"
 )
 

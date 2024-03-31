@@ -1,10 +1,10 @@
 package services
 
 import (
-	"awesomeProject0511/common"
-	"awesomeProject0511/dto"
-	"awesomeProject0511/model"
 	"github.com/jinzhu/gorm"
+	"one/common"
+	"one/dto"
+	"one/model"
 )
 
 func (VideoService) AddLikeVideo(userID, videoID uint) *dto.RetDTO {

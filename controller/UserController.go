@@ -1,11 +1,6 @@
 package controller
 
 import (
-	"awesomeProject0511/common"
-	"awesomeProject0511/dto"
-	"awesomeProject0511/model"
-	"awesomeProject0511/services"
-	"awesomeProject0511/util"
 	"context"
 	"errors"
 	"fmt"
@@ -13,6 +8,11 @@ import (
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 	"log"
+	"one/common"
+	"one/dto"
+	"one/model"
+	"one/services"
+	"one/util"
 	"regexp"
 	"time"
 )

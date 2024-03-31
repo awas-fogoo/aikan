@@ -1,8 +1,8 @@
 package services
 
 import (
-	"awesomeProject0511/common"
-	"awesomeProject0511/model"
+	"one/common"
+	"one/model"
 )
 
 type CommentResult struct {

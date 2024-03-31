@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"awesomeProject0511/middleware"
 	"github.com/gin-gonic/gin"
+	"one/middleware"
 )
 
 func CollectRouter(r *gin.Engine) *gin.Engine {

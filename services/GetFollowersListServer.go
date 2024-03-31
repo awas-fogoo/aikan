@@ -1,12 +1,12 @@
 package services
 
 import (
-	"awesomeProject0511/common"
-	"awesomeProject0511/dto"
-	"awesomeProject0511/util"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"log"
+	"one/common"
+	"one/dto"
+	"one/util"
 )
 
 func GetFollowersListServer(c *gin.Context) {
