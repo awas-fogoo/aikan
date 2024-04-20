@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var jwtKey = []byte("aikan_key_ANi_con_Z_L")
+var jwtKey = []byte("AKGHS666NGKJA")
 
 type Claims struct {
 	UserId uint
@@ -32,7 +32,6 @@ func ReleaseToken(user model.User) (s string, string error) {
 	return tokenString, nil
 }
 
-// 解析claims
 func ParseToken(tokenString string) (*jwt.Token, *Claims, error) {
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
@@ -40,5 +39,3 @@ func ParseToken(tokenString string) (*jwt.Token, *Claims, error) {
 	})
 	return token, claims, err
 }
-
-// go get github.com/golang-jwt/jwt

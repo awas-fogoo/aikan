@@ -30,8 +30,9 @@ func InitCache() {
 	ctx := context.TODO()
 
 	if err := client.Ping(ctx).Err(); err != nil {
-		log.Printf("连接到 Redis 失败：%v", err)
+		log.Printf("Failed connected to Redis: %v", err)
 	} else {
+		log.Printf("Successfully connected to Redis")
 		// 如果连接成功，则将新的客户端赋值给 RDB 变量
 		RDBMux.Lock()
 		RDB = client

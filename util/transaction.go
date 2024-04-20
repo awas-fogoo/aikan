@@ -2,7 +2,7 @@ package util
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 	"log"
 )
 

@@ -29,10 +29,10 @@ func main() {
 
 	// 启动HTTP服务,默认在0.0.0.0:8080启动服务
 	port := viper.GetString("server.port")
-	if port != "" {
-		panic(r.Run(":" + port))
+	fmt.Println(port)
+	if err := r.Run(":" + port); err != nil {
+		log.Fatalf("Failed to start server on port %s: %v", port, err)
 	}
-	panic(r.Run())
 }
 
 func InitConfig() {
@@ -42,8 +42,9 @@ func InitConfig() {
 	viper.AddConfigPath(workDir + "/config")
 	err := viper.ReadInConfig()
 	if err != nil {
-		panic(err)
+		log.Fatalf("Failed to start server: %v", err)
 	}
 	common.InitDB()
-	common.InitCache()
+	//common.InitCache()
+	//common.InitMongoDB()
 }

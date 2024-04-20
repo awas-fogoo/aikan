@@ -5,19 +5,27 @@ server:
 # 数据库配置信息
 datasource:
   driverName: mysql
-  host: 127.0.0.1
-#  host: 172.23.0.3
+  host: 74.48.75.173
+  #  host: 127.0.0.1
   port: 3306
-  database: aikan
+  database: one
   username: root
-  password: aikan_root_980002_admin
-#  password: aikan_root_980002_admin_007
+  password: OwKO8HuAr0
   charset: utf8
   loc: Asia/Shanghai
+
 redis:
-  host: 127.0.0.1
+  host: 74.48.75.173
+#  host: 127.0.0.1
   port: 6379
-  password: 2O0xKGdpJ
+  password: 9RKWDsT6gm
+
+mongo:
+  host: 74.48.75.173
+#  host: 127.0.0.1
+  port: 27017
+  username: root
+  password: yO08ZnSHHq
 
 # 邮件发送配置
 email:

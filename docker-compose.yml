@@ -2,15 +2,15 @@ version: '3'
 services:
   golang:
     build: ./
-    image: aikan/golang:0.2
+    image: aikan/golang:1.0
     container_name: goback
     restart: always
     ports:
       - "18888:18888"
     networks:
-      - test-net
+      - one
 
 networks:
-  test-net:
+  one:
     driver: bridge
     external: true

@@ -2,9 +2,9 @@ package common
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/spf13/viper"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 	"log"
 	"net/url"
 	"one/model"
@@ -13,7 +13,7 @@ import (
 var DB *gorm.DB
 
 func InitDB() {
-	driverName := viper.GetString("datasource.driverName")
+	// 从配置文件读取数据库连接信息
 	host := viper.GetString("datasource.host")
 	port := viper.GetString("datasource.port")
 	database := viper.GetString("datasource.database")
@@ -21,7 +21,9 @@ func InitDB() {
 	password := viper.GetString("datasource.password")
 	charset := viper.GetString("datasource.charset")
 	loc := viper.GetString("datasource.loc")
-	var args = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=true&loc=%s",
+
+	// 构建 DSN
+	var dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=True&loc=%s",
 		username,
 		password,
 		host,
@@ -29,39 +31,28 @@ func InitDB() {
 		database,
 		charset,
 		url.QueryEscape(loc))
-	db, err := gorm.Open(driverName, args)
+
+	// 使用 mysql.New 函数构建 MySQL Dialector
+	db, err := gorm.Open(mysql.New(mysql.Config{
+		DSN: dsn,
+	}), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("Database connection failed")
+		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
-	tx := db.Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-			log.Fatalf(fmt.Sprintf("Database transaction failed: %v", r))
-		} else {
-			tx.Commit()
+	log.Printf("Successfully connected to Mysql")
+	// 自动迁移所有模型
+	models := []interface{}{&model.User{}, &model.Role{}, &model.Permission{},
+		&model.Device{}, &model.Series{}, &model.Season{}, &model.Episode{},
+		&model.Video{}, &model.Tag{}, &model.VideoTag{},
+		&model.Advertisement{}}
+	for _, _model := range models {
+		err = db.AutoMigrate(_model)
+		if err != nil {
+			fmt.Println("Failed to migrate database model:", err)
+			return
 		}
-	}()
-
-	if err := tx.AutoMigrate(&model.User{}, &model.Video{}, &model.Category{},
-		&model.Comment{}, &model.CommentRelation{}, &model.Role{}, &model.Permission{},
-		&model.RolePermission{}, &model.Danmuku{},
-		&model.UserLike{}, &model.UserCollection{}, &model.Tag{}, &model.VideoTag{},
-		&model.Auth{}, &model.SearchRecord{},
-	).Error; err != nil {
-		log.Fatalf("Unable to migrate table:" + err.Error())
 	}
-	tx.Model(&model.User{}).AddUniqueIndex("idx_user_username", "username")
-	tx.Model(&model.Video{}).AddIndex("idx_video_title", "title")
-	tx.Model(&model.Video{}).AddIndex("idx_video_description", "description")
-	tx.Model(&model.Video{}).AddForeignKey("category_id", "categories(id)", "CASCADE", "CASCADE")
-	tx.Model(&model.Video{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
-	tx.Model(&model.Comment{}).AddIndex("idx_comment_user_video", "user_id", "video_id")
-	tx.Model(&model.CommentRelation{}).AddIndex("idx_comment_ancestor_descendant", "ancestor_id", "descendant_id")
-
-	db.DB().SetMaxIdleConns(10)  // 设置连接池中的最大闲置连接数
-	db.DB().SetMaxOpenConns(100) // 设置连接池中的最大打开连接数
-
+	fmt.Println("Database migration completed successfully.")
 	DB = db
 }
