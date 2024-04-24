@@ -44,7 +44,7 @@ func InitDB() {
 	// 自动迁移所有模型
 	models := []interface{}{&model.User{}, &model.Role{}, &model.Permission{},
 		&model.Device{}, &model.Series{}, &model.Season{}, &model.Episode{},
-		&model.Video{}, &model.Tag{}, &model.VideoTag{},
+		&model.Video{}, &model.Tag{}, &model.VideoTag{}, &model.VideoURL{},
 		&model.Advertisement{}}
 	for _, _model := range models {
 		err = db.AutoMigrate(_model)

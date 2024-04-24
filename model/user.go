@@ -80,10 +80,17 @@ type Video struct {
 	Description     *string `gorm:"type:text"`
 	Uploader        *string `gorm:"size:255"`
 	Duration        int
-	Category        *string `gorm:"size:100"`
-	Resolution      *string `gorm:"size:100"`
-	BelongsToSeries *uint   `gorm:"index;constraint:OnDelete:SET NULL"`
-	CoverImageUrl   *string `gorm:"default:null"`
+	Category        *string    `gorm:"size:100"`
+	Resolution      *string    `gorm:"size:100"`
+	BelongsToSeries *uint      `gorm:"index;constraint:OnDelete:SET NULL"`
+	CoverImageUrl   *string    `gorm:"default:null"`
+	VideoURLs       []VideoURL `gorm:"foreignKey:VideoID"` // 关联多个视频URL
+}
+
+type VideoURL struct {
+	gorm.Model
+	VideoID uint   `gorm:"index"`    // 关联的视频ID
+	URL     string `gorm:"size:255"` // 视频的URL
 }
 
 type Tag struct {
