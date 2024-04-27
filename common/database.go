@@ -41,7 +41,7 @@ func InitDB() {
 	}
 
 	log.Printf("Successfully connected to Mysql")
-	// 自动迁移所有模型
+	//自动迁移所有模型
 	models := []interface{}{&model.User{}, &model.Role{}, &model.Permission{},
 		&model.Device{}, &model.Series{}, &model.Season{}, &model.Episode{},
 		&model.Video{}, &model.Tag{}, &model.VideoTag{}, &model.VideoURL{},

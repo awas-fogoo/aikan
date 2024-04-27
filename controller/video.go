@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"one/common"
 	"one/dto"
 	"one/model"
@@ -60,4 +61,22 @@ func UploadSeason(c *gin.Context) {
 		db.Create(&episode)
 	}
 	c.JSON(200, dto.Success("Season and episodes uploaded successfully"))
+}
+
+// 获取视频
+func GetVideo(c *gin.Context) {
+	var db *gorm.DB
+
+	var video model.Video
+	storyId := c.Param("storyId")
+
+	//db.Where("story_id=?", storyId).First(&video)
+	//c.JSON(200, dto.RetDTO{Message: "Login successful", Data: video})
+	result := db.Table("videos").Where("story_id = ?", storyId).First(&video)
+	if result.Error != nil {
+		c.JSON(500, gin.H{"error": "Internal Server Error"})
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "Video found", "data": video})
 }

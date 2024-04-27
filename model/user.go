@@ -80,6 +80,7 @@ type Video struct {
 	Description     *string `gorm:"type:text"`
 	Uploader        *string `gorm:"size:255"`
 	Duration        int
+	StoryId         int
 	Category        *string    `gorm:"size:100"`
 	Resolution      *string    `gorm:"size:100"`
 	BelongsToSeries *uint      `gorm:"index;constraint:OnDelete:SET NULL"`

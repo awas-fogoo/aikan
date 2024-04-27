@@ -12,4 +12,7 @@ func UserAuthenticationRoute(v1 *gin.RouterGroup) {
 	v1.POST("/auth/login", controller.Login)
 	v1.POST("/auth/refresh")
 	v1.POST("/auth/logout")
+
+	//获取电影信息列表
+	v1.POST("/auth/getVideo", controller.GetVideo)
 }
