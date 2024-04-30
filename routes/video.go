@@ -22,6 +22,8 @@ func VideoRoute(v1 *gin.RouterGroup) {
 	//v1.GET("/videos/:id/likes", controller.VideosController{}.GetLikes)
 	v1.GET("/video/upload", controller.UploadVideo)
 	v1.GET("/video/season", controller.UploadSeason)
+	v1.POST("/video/getVideoMsgByVideoId", controller.GetVideoMsgByVideoId)
+	v1.POST("/video/getVideoStory", controller.GetVideoStory)
 }
 
 /*

@@ -92,8 +92,8 @@ type VideoURL struct {
 	gorm.Model
 	VideoID uint   `gorm:"index"`    // 关联的视频ID
 	URL     string `gorm:"size:255"` // 视频的URL
+	Name    string
 }
-
 type Tag struct {
 	gorm.Model
 	TagName string `gorm:"size:100"`

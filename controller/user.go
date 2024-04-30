@@ -204,6 +204,7 @@ func verifyPwd(db *gorm.DB, username string, password string) (*model.User, erro
 	var user model.User
 	// 用用户名或者邮箱来查找用户
 	result := db.Where("username = ? OR email = ?", username, username).First(&user)
+
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, errors.New("user not found")
@@ -224,6 +225,7 @@ func CheckPasswordHash(password string, hash string) bool {
 	return err == nil
 }
 func IsFieldExist(db *gorm.DB, field string, value string) bool {
+
 	var user model.User
 	result := db.Where(field+" = ?", value).First(&user)
 	if result.RowsAffected == 0 {

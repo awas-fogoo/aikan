@@ -7,7 +7,6 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"net/url"
-	"one/model"
 )
 
 var DB *gorm.DB
@@ -42,17 +41,17 @@ func InitDB() {
 
 	log.Printf("Successfully connected to Mysql")
 	//自动迁移所有模型
-	models := []interface{}{&model.User{}, &model.Role{}, &model.Permission{},
-		&model.Device{}, &model.Series{}, &model.Season{}, &model.Episode{},
-		&model.Video{}, &model.Tag{}, &model.VideoTag{}, &model.VideoURL{},
-		&model.Advertisement{}}
-	for _, _model := range models {
-		err = db.AutoMigrate(_model)
-		if err != nil {
-			fmt.Println("Failed to migrate database model:", err)
-			return
-		}
-	}
+	//models := []interface{}{&model.User{}, &model.Role{}, &model.Permission{},
+	//	&model.Device{}, &model.Series{}, &model.Season{}, &model.Episode{},
+	//	&model.Video{}, &model.Tag{}, &model.VideoTag{}, &model.VideoURL{},
+	//	&model.Advertisement{}}
+	//for _, _model := range models {
+	//	err = db.AutoMigrate(_model)
+	//	if err != nil {
+	//		fmt.Println("Failed to migrate database model:", err)
+	//		return
+	//	}
+	//}
 	fmt.Println("Database migration completed successfully.")
 	DB = db
 }

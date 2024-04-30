@@ -91,3 +91,15 @@ type DanmukuStyle struct {
 	Padding         string `bson:"padding"`
 	BackgroundColor string `bson:"backgroundColor"`
 }
+
+// Story 结构体与 a_story 表对应
+type Story struct {
+	ID         uint   `gorm:"primaryKey" json:"id"`                  // id 主键
+	VideoType  string `gorm:"column:video_type" json:"video_type"`   // 视频类型
+	Name       string `gorm:"column:name" json:"name"`               // 剧情
+	CreateBy   string `gorm:"column:create_by" json:"create_by"`     // 创建人
+	CreateTime string `gorm:"column:create_time" json:"create_time"` // 创建时间
+	UpdateBy   string `gorm:"column:update_by" json:"update_by"`     // 修改人
+	UpdateTime string `gorm:"column:update_time" json:"update_time"` // 修改时间
+	Remark     string `gorm:"column:remark" json:"remark"`           // 备注
+}
