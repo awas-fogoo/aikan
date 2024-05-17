@@ -76,16 +76,18 @@ type Episode struct {
 
 type Video struct {
 	gorm.Model
-	Title           string  `gorm:"size:255"`
-	Description     *string `gorm:"type:text"`
-	Uploader        *string `gorm:"size:255"`
-	Duration        int
-	StoryId         int
-	Category        *string    `gorm:"size:100"`
-	Resolution      *string    `gorm:"size:100"`
-	BelongsToSeries *uint      `gorm:"index;constraint:OnDelete:SET NULL"`
-	CoverImageUrl   *string    `gorm:"default:null"`
-	VideoURLs       []VideoURL `gorm:"foreignKey:VideoID"` // 关联多个视频URL
+	Title            string  `gorm:"size:255"`
+	Description      *string `gorm:"type:text"`
+	Uploader         *string `gorm:"size:255"`
+	Duration         int
+	StoryId          int
+	Category         *string    `gorm:"size:100"`
+	Resolution       *string    `gorm:"size:100"`
+	BelongsToSeries  *uint      `gorm:"index;constraint:OnDelete:SET NULL"`
+	CoverImageUrl    *string    `gorm:"default:null"`
+	IsRecommend      int        //是否推荐，可以放在热播，或轮播图 0是不推荐 ，1是推荐 默认是0
+	CollectionNumber int        //集数，这个可以后台定时任务来计算集数（也可以在更新集数后直接调用）
+	VideoURLs        []VideoURL `gorm:"foreignKey:VideoID"` // 关联多个视频URL
 }
 
 type VideoURL struct {

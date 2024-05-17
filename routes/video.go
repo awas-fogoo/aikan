@@ -23,7 +23,11 @@ func VideoRoute(v1 *gin.RouterGroup) {
 	v1.GET("/video/upload", controller.UploadVideo)
 	v1.GET("/video/season", controller.UploadSeason)
 	v1.POST("/video/getVideoMsgByVideoId", controller.GetVideoMsgByVideoId)
-	v1.POST("/video/getVideoStory", controller.GetVideoStory)
+	v1.POST("/video/getVideoStory", controller.GetVideoStory) //相当与频道
+	//v1.POST("/video/getVideoStory", controller.GetVideoStory) //相当与频道
+	v1.POST("/video/GetVideoByStoryId", controller.GetVideoByStoryId)
+	v1.POST("/video/VideoSearch", controller.VideoSearch)
+	v1.POST("/video/GetVideoAllList", controller.GetVideoAllList)
 }
 
 /*
