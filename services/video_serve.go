@@ -35,6 +35,8 @@ func VideoSearch(c *gin.Context) ([]vo.VideoMsg, int64, error) {
 	db.Table("videos").Where("title LIKE ?", "%"+videoName+"%").Count(&totalCount)
 	//搜索出来的列表 指定分页
 	db.Table("videos").Where("title LIKE ?", "%"+videoName+"%").Offset(offset).Limit(pageSize).Find(&videoMsg)
+	common.SaveSearchHistory("user", videoName)
+
 	return videoMsg, totalCount, nil
 }
 
