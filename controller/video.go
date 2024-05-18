@@ -108,17 +108,6 @@ func GetVideoStory(c *gin.Context) {
 
 }
 
-// 视频搜索
-func VideoSearch(c *gin.Context) {
-	videosMsg, totalCount, err := services.VideoSearch(c)
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(200, gin.H{"message": "Video found", "data": videosMsg, "totalCount": totalCount})
-
-}
-
 // 根据视频类型来获取全部视频
 func GetVideoAllList(c *gin.Context) {
 	videoAllList, count, err := services.GetVideoAllList(c)
@@ -128,3 +117,5 @@ func GetVideoAllList(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{"message": "Video found", "data": videoAllList, "totalCount": count})
 }
+
+//

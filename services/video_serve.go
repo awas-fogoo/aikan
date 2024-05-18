@@ -8,38 +8,6 @@ import (
 	_ "one/vo"
 )
 
-// 视频搜索
-func VideoSearch(c *gin.Context) ([]vo.VideoMsg, int64, error) {
-	type RequestBody struct {
-		VideoName string `json:"videoName"`
-		Page      int    `json:"page"`
-		PageSize  int    `json:"pageSize"`
-	}
-	var requestBody RequestBody
-	if err := c.ShouldBindJSON(&requestBody); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
-	}
-	videoName := requestBody.VideoName
-	db := common.DB
-	var videoMsg []vo.VideoMsg
-	// 执行模糊搜索并分页
-	page := requestBody.Page
-	pageSize := requestBody.PageSize
-	//判断前端传参数是否正确
-	if requestBody.VideoName == "" && requestBody.Page == 0 && pageSize < 1 {
-		c.JSON(400, gin.H{"error": "请传入正确参数"})
-	}
-	offset := (page - 1) * pageSize
-	var totalCount int64
-	//查询搜索的总数，用来前端分页
-	db.Table("videos").Where("title LIKE ?", "%"+videoName+"%").Count(&totalCount)
-	//搜索出来的列表 指定分页
-	db.Table("videos").Where("title LIKE ?", "%"+videoName+"%").Offset(offset).Limit(pageSize).Find(&videoMsg)
-	common.SaveSearchHistory("user", videoName)
-
-	return videoMsg, totalCount, nil
-}
-
 // 获取推荐视频
 func GetRecommendVideoList(c *gin.Context) ([]model.Video, error) {
 	var videoList []model.Video

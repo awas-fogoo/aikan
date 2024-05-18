@@ -26,7 +26,6 @@ func VideoRoute(v1 *gin.RouterGroup) {
 	v1.POST("/video/getVideoStory", controller.GetVideoStory) //相当与频道
 	//v1.POST("/video/getVideoStory", controller.GetVideoStory) //相当与频道
 	v1.POST("/video/GetVideoByStoryId", controller.GetVideoByStoryId)
-	v1.POST("/video/VideoSearch", controller.VideoSearch)
 	v1.POST("/video/GetVideoAllList", controller.GetVideoAllList)
 }
 
