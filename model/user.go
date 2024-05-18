@@ -55,6 +55,8 @@ type Series struct {
 	Category      *string `gorm:"size:100"`  //分类
 	TotalSeasons  int     //总季数
 	TotalEpisodes int     //总集数
+	RegionID      uint    `gorm:"index"` // 地区ID
+	Year          int     // 年份
 }
 
 type Season struct {
@@ -80,25 +82,47 @@ type Video struct {
 	Description      *string    `gorm:"type:text"` //描述
 	Uploader         *string    `gorm:"size:255"`  //上传者
 	Duration         int        //时长
-	Category         []Category `gorm:"onDelete:CASCADE"`                   //分类
-	Resolution       *string    `gorm:"size:100"`                           //分辨率
+	Categories       []Category `gorm:"many2many:video_categories;"`        // 分类
+	Actors           []string   `gorm:"type:text"`                          // 演员，存储演员列表
 	BelongsToSeries  *uint      `gorm:"index;constraint:OnDelete:SET NULL"` //属于系列
 	CoverImageUrl    *string    `gorm:"default:null"`                       //封面地址
 	IsRecommend      int        //是否推荐，可以放在热播，或轮播图 0是不推荐 ，1是推荐 默认是0
 	CollectionNumber int        //集数，这个可以后台定时任务来计算集数（也可以在更新集数后直接调用）
 	VideoURLs        []VideoURL `gorm:"foreignKey:VideoID"` // 关联多个视频URL
 }
+type Region struct {
+	gorm.Model
+	Name string `gorm:"size:100"` // 地区名字
+}
+
+// VideoCategory Join table for many-to-many relationship between Video and Category
+type VideoCategory struct {
+	VideoID    uint `gorm:"primaryKey"`
+	CategoryID uint `gorm:"primaryKey"`
+}
 
 type Category struct {
 	gorm.Model
-	CategoryName string `gorm:"size:100"` // 分类名字
+	Name      string `gorm:"size:100"` // 分类名字
+	SortOrder int    // 排序
+}
+
+// Carousel 轮播图
+type Carousel struct {
+	gorm.Model
+	ImageURL  string `gorm:"size:1024"` // 轮播图图片URL
+	SortOrder int    // 排序字段，数字越小排序越靠前
+	VideoID   uint   `gorm:"index"`     // 关联的视频ID
+	Link      string `gorm:"size:1024"` // 链接
+	Remark    string `gorm:"type:text"` // 备注信息，使用text类型以存储较长的文本
 }
 
 type VideoURL struct {
 	gorm.Model
-	VideoID uint   `gorm:"index"`    // 关联的视频ID
-	URL     string `gorm:"size:255"` // 视频的URL
-	Name    string
+	VideoID   uint   `gorm:"index"` // 关联的视频ID
+	SortOrder int    // 排序字段，数字越小排序越靠前
+	URL       string `gorm:"size:255"` // 视频的URL
+	Name      string
 }
 
 type Tag struct {

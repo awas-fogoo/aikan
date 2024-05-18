@@ -45,14 +45,14 @@ func InitDB() {
 	models := []interface{}{&model.User{}, &model.Role{}, &model.Permission{},
 		&model.Device{}, &model.Series{}, &model.Season{}, &model.Episode{},
 		&model.Video{}, &model.Tag{}, &model.VideoTag{}, &model.VideoURL{},
-		&model.Advertisement{}, &model.Category{}}
+		&model.Advertisement{}, &model.Category{}, &model.Carousel{}, &model.Region{}}
 	for _, _model := range models {
 		err = db.AutoMigrate(_model)
 		if err != nil {
-			fmt.Println("Failed to migrate database model:", err)
+			log.Fatalln("Failed to migrate database model:", err)
 			return
 		}
 	}
-	fmt.Println("Database migration completed successfully.")
+	log.Println("Database migration completed successfully.")
 	DB = db
 }
