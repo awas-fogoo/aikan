@@ -101,12 +101,12 @@ func GetVideoMsgByVideoId(c *gin.Context) {
 }
 
 // 获取视频类型(1.电影 2.电视剧 3.综艺)
-func GetVideoStory(c *gin.Context) {
-	db := common.DB
-	var Story []model.Story
-	db.Table("a_story").Find(&Story)
-
-}
+//func GetVideoStory(c *gin.Context) {
+//	db := common.DB
+//	var Story []model.Story
+//	db.Table("a_story").Find(&Story)
+//
+//}
 
 // 根据视频类型来获取全部视频
 func GetVideoAllList(c *gin.Context) {

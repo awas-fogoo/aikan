@@ -80,7 +80,7 @@ type Video struct {
 	Description      *string    `gorm:"type:text"` //描述
 	Uploader         *string    `gorm:"size:255"`  //上传者
 	Duration         int        //时长
-	Category         *string    `gorm:"size:100"`                           //分类
+	Category         []Category `gorm:"onDelete:CASCADE"`                   //分类
 	Resolution       *string    `gorm:"size:100"`                           //分辨率
 	BelongsToSeries  *uint      `gorm:"index;constraint:OnDelete:SET NULL"` //属于系列
 	CoverImageUrl    *string    `gorm:"default:null"`                       //封面地址
@@ -89,12 +89,18 @@ type Video struct {
 	VideoURLs        []VideoURL `gorm:"foreignKey:VideoID"` // 关联多个视频URL
 }
 
+type Category struct {
+	gorm.Model
+	CategoryName string `gorm:"size:100"` // 分类名字
+}
+
 type VideoURL struct {
 	gorm.Model
 	VideoID uint   `gorm:"index"`    // 关联的视频ID
 	URL     string `gorm:"size:255"` // 视频的URL
 	Name    string
 }
+
 type Tag struct {
 	gorm.Model
 	TagName string `gorm:"size:100"` // 标签

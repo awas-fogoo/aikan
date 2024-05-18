@@ -45,7 +45,7 @@ func InitDB() {
 	models := []interface{}{&model.User{}, &model.Role{}, &model.Permission{},
 		&model.Device{}, &model.Series{}, &model.Season{}, &model.Episode{},
 		&model.Video{}, &model.Tag{}, &model.VideoTag{}, &model.VideoURL{},
-		&model.Advertisement{}, &model.Story{}}
+		&model.Advertisement{}, &model.Category{}}
 	for _, _model := range models {
 		err = db.AutoMigrate(_model)
 		if err != nil {
