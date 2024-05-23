@@ -49,76 +49,55 @@ func TestUploadVideo(t *testing.T) {
 	// 使用事务进行操作
 	err = db.Transaction(func(tx *gorm.DB) error {
 		// 创建系列数据
-		seriesDescription := "故事讲述了一个身世神秘的青年范闲，历经家族、江湖、庙堂的种种考验与锤炼，他秉持正义、良善，开始了新的人生征途，继续书写出这段不同寻常又酣畅淋漓的人生传奇。 剧作既根植于传统文化，又超脱于传统历史小说，是一部极具东方古典气韵和现代意识的力作，致力弘扬珍惜当下美好，不忘初心的中华传统价值美德。余年有幸，与君再相逢。"
-		series := model.Series{
-			Title:        "庆余年第二季",
-			Description:  &seriesDescription,
-			Categories:   []model.Category{category1, category2},
-			TotalSeasons: 2,
-			Actors:       "张若昀-范闲,李沁-林婉儿,陈道明-庆帝",
-			RegionID:     1,
-			Year:         2024,
-			IsRecommend:  1,
-			Tags:         []model.Tag{tag1, tag2},
+		actor := "张若昀-范闲,李沁-林婉儿,陈道明-庆帝"
+		year := 2024
+		detailDescription := "故事讲述了一个身世神秘的青年范闲，历经家族、江湖、庙堂的种种考验与锤炼，他秉持正义、良善，开始了新的人生征途，继续书写出这段不同寻常又酣畅淋漓的人生传奇。 剧作既根植于传统文化，又超脱于传统历史小说，是一部极具东方古典气韵和现代意识的力作，致力弘扬珍惜当下美好，不忘初心的中华传统价值美德。余年有幸，与君再相逢。"
+		var detail = model.Detail{
+			Title:          "庆余年第二季",
+			Description:    &detailDescription,
+			Categories:     1,
+			CoverImageUrl:  nil,
+			Director:       nil,
+			Scriptwriter:   nil,
+			CurrentEpisode: 1,
+			TotalEpisodes:  35,
+			Actors:         &actor,
+			RegionID:       1,
+			Year:           &year,
+			Tags:           []model.Tag{tag1, tag2},
 		}
-		if err := tx.Create(&series).Error; err != nil {
-			return err
-		}
-
-		// 创建季数据
-		seasonDescription := "《庆余年第二季》是由孙皓执导，张若昀、李沁领衔主演，陈道明、吴刚、郭麒麟、田雨、李小冉、宋轶、辛芷蕾、刘端端等联合主演的古装传奇剧。该剧于2024年5月16日在中央电视台电视剧频道首播，腾讯视频全网独播。"
-		season := model.Season{
-			SeriesID:     series.ID,
-			SeasonNumber: 1,
-			Description:  &seasonDescription,
-		}
-		if err := tx.Create(&season).Error; err != nil {
+		if err := tx.Create(&detail).Error; err != nil {
 			return err
 		}
 
 		// 创建集数和关联视频
 		for i := 1; i <= 8; i++ {
-			episodeTitle := fmt.Sprintf("Episode %d", i)
-			episodeDesc := "What happens next will shock you."
+			detailTitle := fmt.Sprintf("Episode %d", i)
 			videoDesc := "High quality 1080p"
 			coverUrl := "http://example.com/cover.jpg"
-			uploader := fmt.Sprintf("John Doe %d", i)
-
-			episode := model.Episode{
-				SeasonID:      season.ID,
-				EpisodeNumber: i,
-				Title:         episodeTitle,
-				Description:   &episodeDesc,
-			}
-			if err := tx.Create(&episode).Error; err != nil {
-				return err
-			}
 
 			video := model.Video{
-				EpisodeID:     episode.ID,
-				Title:         episodeTitle,
+				DetailID:      detail.ID,
+				Title:         detailTitle,
 				Description:   &videoDesc,
-				Duration:      45 * 60, // 45分钟
 				CoverImageUrl: &coverUrl,
 				Tags:          []model.Tag{tag1, tag2},
 				VideoURLs: []model.VideoURL{
 					{
 						Order:    1,
 						URL:      "http://example.com/video1.mp4",
-						Source:   "YouTube",
-						Quality:  "1080p",
-						Language: "English",
-						Subtitle: "内嵌字幕",
-						Uploader: &uploader,
+						Source:   nil,
+						Quality:  nil,
+						Language: nil,
+						Subtitle: nil,
 					},
 					{
 						Order:    2,
 						URL:      "http://example.com/video2.mp4",
-						Source:   "Vimeo",
-						Quality:  "720p",
-						Language: "中文",
-						Subtitle: "无字幕",
-						Uploader: &uploader,
+						Source:   nil,
+						Quality:  nil,
+						Language: nil,
+						Subtitle: nil,
 					},
 				},
 			}

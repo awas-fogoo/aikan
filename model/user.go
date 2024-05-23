@@ -48,60 +48,51 @@ type Device struct {
 	Browser         *string `gorm:"size:100"`                                   // 浏览器
 }
 
-type Series struct {
+type Detail struct {
 	gorm.Model
-	Title        string     `gorm:"size:255"`                     // 标题
-	Description  *string    `gorm:"type:text"`                    // 描述
-	Categories   []Category `gorm:"many2many:series_categories;"` // 分类
-	TotalSeasons int        // 总季数
-	Actors       string     `gorm:"type:text"` // 演员，存储演员列表
-	RegionID     uint       `gorm:"index"`     // 地区ID
-	Year         int        // 年份
-	IsRecommend  int        `gorm:"default:0"`                                       // 是否推荐，可以放在热播，或轮播图 0是不推荐 ，1是推荐 默认是0
-	Tags         []Tag      `gorm:"many2many:series_tags;"`                          // 标签
-	Remark       string     `gorm:"type:text"`                                       // 备注信息
-	Seasons      []Season   `gorm:"foreignKey:SeriesID;constraint:OnDelete:CASCADE"` // 关联多个季，级联删除
-}
-
-type Season struct {
-	gorm.Model
-	SeriesID       uint      `gorm:"index;not null;constraint:OnDelete:CASCADE"` // 系列ID
-	SeasonNumber   int       // 季编号
-	Description    *string   `gorm:"type:text"` // 描述
-	CurrentEpisode int       // 最新更新的集数
-	TotalEpisodes  int       // 总集数
-	Episodes       []Episode `gorm:"foreignKey:SeasonID;constraint:OnDelete:CASCADE"` // 关联多个集数，级联删除
-}
-
-type Episode struct {
-	gorm.Model
-	SeasonID      uint    `gorm:"index;not null;constraint:OnDelete:CASCADE"` // 所属季
-	EpisodeNumber int     // 集数
-	Title         string  `gorm:"size:255"`                                         // 标题
-	Description   *string `gorm:"type:text"`                                        // 描述
-	Videos        []Video `gorm:"foreignKey:EpisodeID;constraint:OnDelete:CASCADE"` // 关联多个视频，级联删除
+	Title          string  `gorm:"size:255"`                                        // 标题
+	Description    *string `gorm:"type:text"`                                       // 描述
+	Categories     uint    `gorm:"index"`                                           // 分类
+	CoverImageUrl  *string `gorm:"default:null"`                                    // 封面地址
+	Director       *string `gorm:"default:null"`                                    // 导演
+	Scriptwriter   *string `gorm:"default:null"`                                    // 编剧
+	Actors         *string `gorm:"type:text"`                                       // 演员，e.g. "A,B,C,D"
+	CurrentEpisode int     `gorm:"default:1"`                                       // 最新更新的集数
+	TotalEpisodes  int     `gorm:"default:1"`                                       // 总集数
+	RegionID       uint    `gorm:"index"`                                           // 地区ID
+	Year           *int    `gorm:"default:null"`                                    // 年份
+	ReleaseTime    *string `gorm:"default:null"`                                    // 上映时间（电影专用）
+	Tags           []Tag   `gorm:"many2many:detail_tags;"`                          // 标签
+	Videos         []Video `gorm:"foreignKey:DetailID;constraint:OnDelete:CASCADE"` // 关联多个集数，级联删除
+	Remark         *string `gorm:"type:text"`                                       // 备注信息
 }
 
 type Video struct {
 	gorm.Model
-	EpisodeID     uint       `gorm:"index;not null"` // 所属集数
-	Title         string     `gorm:"size:255"`       // 标题
-	Description   *string    `gorm:"type:text"`      // 描述
-	Duration      int        // 时长
+	DetailID      uint       `gorm:"index;not null;constraint:OnDelete:CASCADE"`     // 所属
+	Title         string     `gorm:"size:255"`                                       // 标题
+	Description   *string    `gorm:"type:text"`                                      // 描述
 	CoverImageUrl *string    `gorm:"default:null"`                                   // 封面地址
-	VideoURLs     []VideoURL `gorm:"foreignKey:VideoID;constraint:OnDelete:CASCADE"` // 关联多个视频URL
+	VideoURLs     []VideoURL `gorm:"foreignKey:VideoID;constraint:OnDelete:CASCADE"` // 视频URL（多线路）
 	Tags          []Tag      `gorm:"many2many:video_tags;"`                          // 标签
-	Remark        string     `gorm:"type:text"`                                      // 备注信息
+	Remark        *string    `gorm:"type:text"`                                      // 备注信息
+}
+
+type VideoURL struct {
+	gorm.Model
+	VideoID  uint    `gorm:"index;not null;constraint:OnDelete:CASCADE"` // 关联的集数ID
+	Order    int     // 排序字段，数字越小排序越靠前
+	URL      string  `gorm:"size:255"` // 视频的URL
+	Source   *string // 视频的来源
+	Quality  *string // 视频的质量（如 720p, 1080p）
+	Language *string // 视频的语言（如 "中文", "English")
+	Subtitle *string // 字幕信息（如 "内嵌字幕", "无字幕")
 }
 
 type Region struct {
 	gorm.Model
-	Name string `gorm:"size:100"` // 地区名字
-}
-
-type SeriesCategory struct {
-	SeriesID   uint `gorm:"primaryKey"`
-	CategoryID uint `gorm:"primaryKey"`
+	Name  string `gorm:"size:100"` // 地区名字
+	Order int    // 排序
 }
 
 type Category struct {
@@ -119,18 +110,6 @@ type Carousel struct {
 	Remark   string `gorm:"type:text"` // 备注信息，使用text类型以存储较长的文本
 }
 
-type VideoURL struct {
-	gorm.Model
-	VideoID  uint    `gorm:"index;not null;constraint:OnDelete:CASCADE"` // 关联的视频ID
-	Order    int     // 排序字段，数字越小排序越靠前
-	URL      string  `gorm:"size:255"` // 视频的URL
-	Uploader *string `gorm:"size:255"` // 上传者
-	Source   string  // 视频的来源
-	Quality  string  // 视频的质量（如 720p, 1080p）
-	Language string  // 视频的语言（如 "中文", "English")
-	Subtitle string  // 字幕信息（如 "内嵌字幕", "无字幕")
-}
-
 type Tag struct {
 	gorm.Model
 	TagName string `gorm:"size:100"` // 标签
@@ -141,8 +120,8 @@ type VideoTag struct {
 	TagID   uint `gorm:"primaryKey;autoIncrement:false"` // 标签ID
 }
 
-type SeriesTag struct {
-	SeriesID uint `gorm:"primaryKey;autoIncrement:false"` // 系列ID
+type DetailTag struct {
+	DetailID uint `gorm:"primaryKey;autoIncrement:false"` // 系列ID
 	TagID    uint `gorm:"primaryKey;autoIncrement:false"` // 标签ID
 }
 
