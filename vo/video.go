@@ -1,14 +1,8 @@
 package vo
 
-type VideoMsg struct {
-	Title            string  `gorm:"size:255"`
-	Description      *string `gorm:"type:text"`
-	Uploader         *string `gorm:"size:255"`
-	Duration         int
-	StoryId          int
-	Category         *string `gorm:"size:100"`
-	Resolution       *string `gorm:"size:100"`
-	BelongsToSeries  *uint   `gorm:"index;constraint:OnDelete:SET NULL"`
-	CoverImageUrl    *string `gorm:"default:null"`
-	CollectionNumber int
+type DetailMsg struct {
+	Id            int
+	Title         string  `gorm:"size:255"`
+	CoverImageUrl *string `gorm:"default:null"` // 封面地址
+	TotalEpisodes int     `gorm:"default:1"`    // 总集数
 }

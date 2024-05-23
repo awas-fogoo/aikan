@@ -43,8 +43,8 @@ func InitDB() {
 	log.Printf("Successfully connected to Mysql")
 	//自动迁移所有模型
 	models := []interface{}{&model.User{}, &model.Role{}, &model.Permission{},
-		&model.Device{}, &model.Series{}, &model.Season{}, &model.Episode{},
-		&model.Video{}, &model.Tag{}, &model.VideoTag{}, &model.SeriesTag{}, &model.VideoURL{},
+		&model.Device{},
+		&model.Video{}, &model.Tag{}, &model.VideoTag{}, &model.VideoURL{},
 		&model.Advertisement{}, &model.Category{}, &model.Carousel{}, &model.Region{}}
 	for _, _model := range models {
 		err = db.AutoMigrate(_model)
